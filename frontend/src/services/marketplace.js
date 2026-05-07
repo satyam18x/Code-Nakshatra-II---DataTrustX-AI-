@@ -13,7 +13,22 @@ const marketplaceService = {
 
     // Seller: Get all buyer requests (The Marketplace)
     getAllRequests: async () => {
-        return await api.get('/market/requests');
+        return await api.get('/market/broadcasts');
+    },
+
+    // Buyer: Get all available datasets
+    getAllDatasets: async () => {
+        return await api.get('/market/datasets');
+    },
+
+    // Seller: Create a new dataset (Asset Initialization)
+    createDataset: async (data) => {
+        return await api.post('/market/datasets', data);
+    },
+
+    // Buyer: Request to purchase a dataset (Escrow Initialization)
+    requestDataset: async (datasetId) => {
+        return await api.post(`/market/request_dataset/${datasetId}`);
     },
 
     // Seller: Submit an offer for a request
@@ -100,6 +115,11 @@ const marketplaceService = {
     // Seller: Get real-time personal stats
     getSellerStats: async () => {
         return await api.get('/market/seller_stats');
+    },
+
+    // Get all validation history for the user
+    getValidationHistory: async () => {
+        return await api.get('/history/');
     }
 };
 

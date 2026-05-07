@@ -47,8 +47,8 @@ const AdminDashboard = () => {
                 marketplaceService.getDisputesAdmin(),
                 marketplaceService.getValidations()
             ]);
-            setDisputes(disputesRes.data);
-            setValidations(validationsRes.data);
+            setDisputes(disputesRes);
+            setValidations(validationsRes);
         } catch (err) {
             toast.error("Failed to fetch administrative data.");
         } finally {
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
         const loadingToast = toast.loading('Retrieving cryptographic validation report...');
         try {
             const res = await marketplaceService.getValidationReportById(reportId);
-            setSelectedReport(res.data);
+            setSelectedReport(res);
             setIsReportModalOpen(true);
             toast.dismiss(loadingToast);
         } catch (err) {

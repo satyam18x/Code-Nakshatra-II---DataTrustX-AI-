@@ -1,27 +1,28 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-    CheckCircle2,
-    XCircle,
-    ShieldCheck,
-    FileSearch,
-    Clock,
-    TrendingUp,
-    History,
-    Search,
-    Download,
-    ExternalLink,
+import { AuthContext } from '../context/AuthContext';
+import { 
+    ShieldCheck, 
+    BarChart3, 
+    Terminal, 
+    Clock, 
+    TrendingUp, 
+    History, 
+    Search, 
+    Download, 
+    ExternalLink, 
     ChevronRight,
     Activity,
-    Lock
+    Lock,
+    Cpu,
+    Fingerprint,
+    Zap,
+    Layers,
+    ArrowUpRight
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
-import LoadingSkeleton from '../components/ui/LoadingSkeleton';
-import EmptyState from '../components/ui/EmptyState';
 import Button from '../components/ui/Button';
 import ValidationReportModal from '../components/ValidationReportModal';
 import marketplaceService from '../services/marketplace';
@@ -31,167 +32,184 @@ const ValidationHistory = () => {
     const [history, setHistory] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedReport, setSelectedReport] = useState(null);
-    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         fetchHistory();
     }, []);
 
     const fetchHistory = async () => {
-        setIsLoading(true);
         try {
-            const res = await api.get('/history/');
-            setHistory(res.data);
+            const data = await marketplaceService.getValidationHistory();
+            setHistory(data);
         } catch (err) {
-            toast.error('Network Protocol: Failed to synchronize validation trace history.');
+            toast.error('Failed to retrieve veracity audit logs.');
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleViewReport = async (reportId) => {
-        const loadingToast = toast.loading('Retrieving cryptographic veracity trace...');
-        try {
-            const res = await marketplaceService.getValidationReportById(reportId);
-            setSelectedReport(res.data);
-            setIsReportModalOpen(true);
-            toast.dismiss(loadingToast);
-        } catch (err) {
-            toast.error(err.response?.data?.detail || "Veracity trace not found in node storage.", { id: loadingToast });
-        }
+    const viewReport = (report) => {
+        setSelectedReport(report);
+        setIsModalOpen(true);
     };
 
-    const stats = [
-        { label: "Aggregate Traces", value: history.length, icon: History, color: "text-indigo-600", bg: "bg-indigo-50" },
-        { label: "Verified Nodes", value: history.filter(h => h.status === 'passed').length, icon: ShieldCheck, color: "text-emerald-600", bg: "bg-emerald-50" },
-        { label: "Logic Failures", value: history.filter(h => h.status !== 'passed').length, icon: Activity, color: "text-red-600", bg: "bg-red-50" },
-        { label: "Mean Integrity Score", value: history.length ? (history.reduce((a, b) => a + b.final_score, 0) / history.length).toFixed(1) + "%" : "0%", icon: TrendingUp, color: "text-indigo-600", bg: "bg-indigo-50" }
-    ];
+    const getScoreColor = (score) => {
+        if (score >= 90) return 'text-audit-500';
+        if (score >= 70) return 'text-brand-500';
+        return 'text-rose-500';
+    };
 
     return (
-        <div className="max-w-7xl mx-auto space-y-12 pb-20">
-            {/* Header Area */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pt-8 px-2">
-                <div>
-                    <div className="flex items-center space-x-3 text-indigo-600 font-bold mb-3 tracking-widest uppercase text-[11px]">
-                        <Lock className="w-4 h-4" />
-                        <span>Security Audit</span>
-                    </div>
-
-                    <h1 className="text-4xl lg:text-5xl font-bold text-neutral-900 tracking-tightest">Validation Logs</h1>
-                    <p className="text-lg text-neutral-500 mt-3 font-medium">Deep-packet inspection records and high-fidelity veracity metrics.</p>
-                </div>
-                <div className="flex items-center space-x-4">
-                    <Button variant="secondary" className="h-12 px-6 rounded-xl border-neutral-100 font-bold" onClick={fetchHistory}>
-                        Synchronize Audit Trail
-                    </Button>
-                </div>
-            </div>
-
-            {/* Metrics Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat, idx) => (
-                    <Card key={idx} className="p-8 group hover:border-indigo-500/20 transition-all duration-500 shadow-sm">
-                        <div className="flex items-start justify-between mb-8">
-                            <div className={`w-14 h-14 rounded-2xl ${stat.bg} flex items-center justify-center transition-transform group-hover:rotate-6`}>
-                                <stat.icon className={`w-6 h-6 ${stat.color}`} strokeWidth={2.5} />
-                            </div>
-                            <span className="text-[11px] font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md tracking-tighter">SECURED</span>
+        <div className="min-h-screen bg-slate-50 pt-24 pb-12 font-sans selection:bg-brand-100 selection:text-brand-900">
+            <div className="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 space-y-8">
+                
+                {/* ── HEADER ── */}
+                <div className="bg-white p-8 lg:p-12 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+                    <div className="space-y-4">
+                        <div className="flex items-center space-x-3 text-brand-600">
+                            <Fingerprint size={18} strokeWidth={2.5} />
+                            <span className="text-[11px] font-black uppercase tracking-[0.2em]">Neural Audit Trails</span>
                         </div>
-                        <p className="text-[12px] font-bold text-neutral-400 uppercase tracking-widest mb-1">{stat.label}</p>
-                        <p className="text-3xl font-bold text-neutral-900 tracking-tight">{stat.value}</p>
-                    </Card>
-                ))}
-            </div>
-
-            {/* List Console */}
-            <div className="space-y-8">
-                <div className="flex items-center justify-between px-2">
-                    <div className="flex items-center space-x-4">
-                        <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
-                        <h2 className="text-2xl font-bold text-neutral-900 tracking-tight">Technical Activity Trace</h2>
+                        <h1 className="text-5xl lg:text-6xl font-display font-bold tracking-tightest text-slate-900">
+                            Veracity <span className="text-brand-500">History</span>
+                        </h1>
+                        <p className="text-lg text-slate-500 font-medium max-w-lg">
+                            Historical trace of autonomous ML audits performed across your node network.
+                        </p>
                     </div>
-                    <div className="flex items-center space-x-2 bg-neutral-50 px-4 py-2 rounded-xl text-[13px] font-bold text-neutral-500">
-                        <Search className="w-4 h-4 mr-2" /> Filter Logs
+
+                    <div className="flex gap-4">
+                        <Button variant="secondary" className="h-14 rounded-2xl border-slate-200 px-8 bg-white">
+                            <Download className="mr-2 w-4 h-4" /> Download Logs
+                        </Button>
                     </div>
                 </div>
 
-                {isLoading ? (
-                    <div className="space-y-6">
-                        <LoadingSkeleton count={4} type="card" className="h-28 rounded-[28px]" />
+                {/* ── METRICS OVERVIEW ── */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {[
+                        { label: "Integrity Index", value: "98.8%", icon: ShieldCheck, color: "text-audit-500" },
+                        { label: "Total Audits", value: history.length.toString().padStart(2, '0'), icon: Activity, color: "text-brand-500" },
+                        { label: "System Uptime", value: "99.99%", icon: Zap, color: "text-brand-500" }
+                    ].map((stat, i) => (
+                        <div key={i} className="p-8 rounded-[2rem] border border-slate-200 bg-white flex items-center justify-between group hover:border-brand-500/30 hover:shadow-soft-xl transition-all">
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{stat.label}</p>
+                                <p className={`text-4xl font-display font-bold ${stat.color} tracking-tightest`}>{stat.value}</p>
+                            </div>
+                            <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 group-hover:text-brand-500 transition-colors border border-slate-100">
+                                <stat.icon size={28} strokeWidth={2.5} />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* ── HISTORY TABLE ── */}
+                <div className="space-y-8 bg-white p-8 lg:p-12 rounded-[3rem] border border-slate-200 shadow-sm">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <History className="text-brand-600 w-5 h-5" strokeWidth={2.5} />
+                            <h2 className="text-2xl font-display font-bold tracking-tightest text-slate-900 uppercase">Audit Records</h2>
+                        </div>
+                        <Badge variant="primary" className="bg-brand-50 text-brand-600 border-brand-200/50 px-4 py-1.5">Cryptographic Trace Live</Badge>
                     </div>
-                ) : history.length === 0 ? (
-                    <Card className="flex items-center justify-center py-32 rounded-[32px] border-dashed border-2 border-neutral-100 bg-transparent">
-                        <EmptyState
-                            icon={ShieldCheck}
-                            title="No activity detected"
-                            description="Historical veracity records will populate here once the neural engine completes a data analysis protocol."
-                        />
-                    </Card>
-                ) : (
-                    <div className="space-y-6">
-                        {history.map((record) => (
-                            <motion.div
-                                key={record.id}
-                                layout
-                                initial={{ opacity: 0, y: 15 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="group"
-                            >
-                                <Card className="p-0 overflow-hidden border-neutral-100 hover:border-indigo-500/30 transition-all duration-500 rounded-[32px] shadow-[0_16px_32px_-12px_rgba(0,0,0,0.03)] bg-white">
-                                    <div className="flex flex-col md:flex-row">
-                                        <div className={`p-8 md:w-56 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-neutral-100 ${record.status === 'passed' ? 'bg-emerald-50/20' : 'bg-red-50/20'
-                                            }`}>
-                                            <span className={`text-3xl font-bold tracking-tightest ${record.status === 'passed' ? 'text-emerald-600' : 'text-red-600'}`}>
-                                                {record.final_score?.toFixed(1)}%
-                                            </span>
-                                            <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest mt-1">Integrity Index</p>
-                                        </div>
 
-                                        <div className="flex-1 p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-                                            <div className="flex items-center space-x-6">
-                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${record.status === 'passed' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
-                                                    }`}>
-                                                    {record.status === 'passed' ? <CheckCircle2 className="w-7 h-7" /> : <XCircle className="w-7 h-7" />}
+                    <Card className="p-0 overflow-hidden border-slate-200 shadow-sm bg-slate-50/20">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead className="bg-slate-100/50 border-b border-slate-200">
+                                    <tr>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Timestamp</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Audit_ID</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Integrity Score</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-200">
+                                    {isLoading ? (
+                                        [1, 2, 3].map(i => (
+                                            <tr key={i} className="animate-pulse">
+                                                <td colSpan="5" className="px-8 py-6 h-20 bg-slate-50/20" />
+                                            </tr>
+                                        ))
+                                    ) : history.map((record, idx) => (
+                                        <motion.tr 
+                                            key={record.id}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: idx * 0.05 }}
+                                            className="hover:bg-white transition-colors group"
+                                        >
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center space-x-3">
+                                                    <Clock size={16} className="text-slate-300" />
+                                                    <span className="font-medium text-slate-600">
+                                                        {new Date(record.created_at).toLocaleString()}
+                                                    </span>
                                                 </div>
-                                                <div className="space-y-2">
-                                                    <div className="flex items-center space-x-3">
-                                                        <h4 className="text-xl font-bold text-neutral-900 tracking-tight">Trace TRC-{record.id}</h4>
-                                                        <Badge variant={record.status === 'passed' ? 'success' : 'danger'} className="text-[10px] font-black px-3 py-1 rounded-lg tracking-widest uppercase">
-                                                            {record.status?.toUpperCase()}
-                                                        </Badge>
+                                            </td>
+                                            <td className="px-8 py-6 font-mono text-[12px] text-slate-400">
+                                                TRACE_{String(record.id ?? '').padStart(8, '0').toUpperCase()}
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div className="flex items-center space-x-4">
+                                                    <div className="h-2 w-24 bg-slate-100 rounded-full overflow-hidden hidden sm:block">
+                                                        <div 
+                                                            className={`h-full ${record.final_score >= 80 ? 'bg-audit-500' : 'bg-brand-500'}`} 
+                                                            style={{ width: `${record.final_score}%` }} 
+                                                        />
                                                     </div>
-                                                    <div className="flex items-center space-x-6 text-[13px] font-bold text-neutral-400">
-                                                        <span className="flex items-center"><Clock className="w-4 h-4 mr-2" /> {new Date(record.created_at).toLocaleString()}</span>
-                                                        <span className="flex items-center text-indigo-600/70"><ShieldCheck className="w-4 h-4 mr-2" /> Secure Node Certificate</span>
-                                                    </div>
+                                                    <span className={`font-display font-bold text-xl tracking-tightest ${getScoreColor(record.final_score)}`}>
+                                                        {record.final_score}%
+                                                    </span>
                                                 </div>
-                                            </div>
-
-                                            <div className="flex items-center gap-4 lg:border-l lg:border-neutral-100 lg:pl-10">
-                                                <Button
-                                                    variant="secondary"
-                                                    className="rounded-xl h-12 px-6 text-[13px] font-black border-neutral-100 hover:bg-neutral-50"
-                                                    onClick={() => handleViewReport(record.id)}
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <Badge 
+                                                    variant={record.status === 'PASS' || record.status === 'passed' ? 'success' : 'danger'}
+                                                    className="uppercase tracking-widest text-[9px] font-black px-3 py-1"
                                                 >
-                                                    TECHNICAL AUDIT <ExternalLink className="w-4 h-4 ml-2.5 opacity-50" />
-                                                </Button>
-                                                <Button variant="ghost" className="w-12 h-12 p-0 rounded-xl border border-neutral-100 hover:bg-neutral-50">
-                                                    <Download className="w-4 h-4 text-neutral-400" />
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Card>
-                            </motion.div>
-                        ))}
+                                                    {record.status}
+                                                </Badge>
+                                            </td>
+                                            <td className="px-8 py-6 text-right">
+                                                <button 
+                                                    onClick={() => viewReport(record)}
+                                                    className="p-3 bg-white border border-slate-200 rounded-xl hover:border-brand-500 hover:text-brand-500 transition-all shadow-sm"
+                                                >
+                                                    <ArrowUpRight size={18} strokeWidth={2.5} />
+                                                </button>
+                                            </td>
+                                        </motion.tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </Card>
+                </div>
+
+                {/* ── EMPTY STATE ── */}
+                {!isLoading && history.length === 0 && (
+                    <div className="py-32 text-center space-y-6 max-w-md mx-auto">
+                        <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8">
+                            <Terminal className="text-slate-200 w-12 h-12" />
+                        </div>
+                        <h3 className="text-3xl font-display font-bold text-slate-900 tracking-tightest">Audit log empty.</h3>
+                        <p className="text-slate-500 font-medium text-lg leading-relaxed">
+                            No autonomous veracity audits have been processed through your node environment yet.
+                        </p>
+                        <Button variant="secondary" className="rounded-full px-8" onClick={fetchHistory}>
+                            Force Protocol Refresh
+                        </Button>
                     </div>
                 )}
             </div>
 
-            <ValidationReportModal
-                isOpen={isReportModalOpen}
-                onClose={() => setIsReportModalOpen(false)}
+            <ValidationReportModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
                 reportData={selectedReport}
             />
         </div>

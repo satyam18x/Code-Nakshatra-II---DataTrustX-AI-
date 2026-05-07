@@ -4,10 +4,12 @@ from sqlalchemy.orm import Session
 import shutil
 import os 
 import uuid
+import json
 
 from app.core.dependencies import get_current_user, get_db
 from app.models.deal import Deal
 from app.models.validation import ValidationResult
+from app.models.request import DatasetRequest
 from ml_engine import validator
 
 router = APIRouter()
@@ -31,8 +33,10 @@ def mark_delivered(
     if deal.seller_username != user.username:
         raise HTTPException(status_code=403, detail="Only seller can mark delivery")
 
-    if deal.payment_status != "escrowed":
-        raise HTTPException(status_code=400, detail="Payment not escrowed yet")
+    # Fetch associated request to check type
+    request = db.query(DatasetRequest).filter(DatasetRequest.id == deal.request_id).first()
+    if not request:
+        raise HTTPException(status_code=404, detail="Associated request not found")
 
     # 1. Save File Temporarily
     temp_filename = f"{uuid.uuid4()}_{file.filename}"
@@ -45,7 +49,15 @@ def mark_delivered(
 
     # 2. Run ML Validation
     try:
-        report = validator.run_validation(file_path)
+        if request.request_type == "similar" and request.reference_dataset_path:
+            # RUN TWIN VALIDATION
+            report = validator.run_twin_validation_wrapper(
+                request.reference_dataset_path, 
+                file_path
+            )
+        else:
+            # RUN STANDARD VALIDATION
+            report = validator.run_validation(file_path)
     except Exception as e:
         if os.path.exists(file_path):
             os.remove(file_path)
@@ -62,7 +74,6 @@ def mark_delivered(
         shutil.move(file_path, final_path)
         
         # Save validation result to history
-        import json
         validation_record = ValidationResult(
             username=user.username,
             deal_id=deal_id,
@@ -88,7 +99,6 @@ def mark_delivered(
             os.remove(file_path)
          
          # Save validation result to history (even for failures)
-         import json
          validation_record = ValidationResult(
              username=user.username,
              deal_id=deal_id,
@@ -119,6 +129,13 @@ def download_dataset(
     # Only buyer (and ideally seller/admin) can download
     if deal.buyer_username != user.username and deal.seller_username != user.username:
         raise HTTPException(status_code=403, detail="Not authorized to download this dataset")
+
+    # Buyer must have paid before downloading
+    if deal.buyer_username == user.username and deal.payment_status != "escrowed":
+        raise HTTPException(
+            status_code=403,
+            detail="Payment required. Please complete payment to unlock download access."
+        )
 
     if deal.delivery_status != "delivered":
         raise HTTPException(status_code=400, detail="Dataset not yet delivered")

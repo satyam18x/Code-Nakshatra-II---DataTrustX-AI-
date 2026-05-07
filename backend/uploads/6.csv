@@ -1,101 +1,501 @@
-Index,User Id,First Name,Last Name,Sex,Email,Phone,Date of birth,Job Title
-1,88F7B33d2bcf9f5,Shelby,Terrell,Male,elijah57@example.net,001-084-906-7849x73518,1945-10-26,Games developer
-2,f90cD3E76f1A9b9,Phillip,Summers,Female,bethany14@example.com,214.112.6044x4913,1910-03-24,Phytotherapist
-3,DbeAb8CcdfeFC2c,Kristine,Travis,Male,bthompson@example.com,277.609.7938,1992-07-02,Homeopath
-4,A31Bee3c201ef58,Yesenia,Martinez,Male,kaitlinkaiser@example.com,584.094.6111,2017-08-03,Market researcher
-5,1bA7A3dc874da3c,Lori,Todd,Male,buchananmanuel@example.net,689-207-3558x7233,1938-12-01,Veterinary surgeon
-6,bfDD7CDEF5D865B,Erin,Day,Male,tconner@example.org,001-171-649-9856x5553,2015-10-28,Waste management officer
-7,bE9EEf34cB72AF7,Katherine,Buck,Female,conniecowan@example.com,+1-773-151-6685x49162,1989-01-22,Intelligence analyst
-8,2EFC6A4e77FaEaC,Ricardo,Hinton,Male,wyattbishop@example.com,001-447-699-7998x88612,1924-03-26,Hydrogeologist
-9,baDcC4DeefD8dEB,Dave,Farrell,Male,nmccann@example.net,603-428-2429x27392,2018-10-06,Lawyer
-10,8e4FB470FE19bF0,Isaiah,Downs,Male,virginiaterrell@example.org,+1-511-372-1544x8206,1964-09-20,"Engineer, site"
-11,BF0BbA03C29Bb3b,Sheila,Ross,Female,huangcathy@example.com,895.881.4746,2008-03-20,Advertising account executive
-12,F738c69fB34E62E,Stacy,Newton,Male,rayleroy@example.org,710.673.3213x80335,1980-10-20,Warden/ranger
-13,C03fDADdAadAdCe,Mandy,Blake,Male,jefferynoble@example.org,(992)466-1305x4947,2007-12-08,"Scientist, clinical (histocompatibility and immunogenetics)"
-14,b759b74BD1dE80d,Bridget,Nash,Female,mercedes44@example.com,(216)627-8359,2004-06-28,Social worker
-15,1F0B7D65A00DAF9,Crystal,Farmer,Male,pmiranda@example.org,+1-024-377-5391,1992-03-09,Agricultural consultant
-16,50Bb061cB30B461,Thomas,Knight,Female,braunpriscilla@example.net,+1-360-880-0766,2006-02-18,Sport and exercise psychologist
-17,D6dbA5308fEC4BC,Maurice,Rangel,Male,sheenabanks@example.com,(246)187-4969,2004-08-20,Secretary/administrator
-18,311D775990f066d,Frank,Meadows,Male,gbrewer@example.org,429.965.3902x4447,2008-09-16,Audiological scientist
-19,7F7E1BAcb0C9AFf,Alvin,Paul,Male,gilbertdonaldson@example.com,219.436.0887x07551,1949-05-12,"Teacher, adult education"
-20,88473e15D5c3cD0,Jared,Mitchell,Female,jcortez@example.com,+1-958-849-6781,1921-01-18,Paediatric nurse
-21,b31D271F8c200AB,Jacqueline,Norton,Female,carias@example.net,819.309.7679x59173,1952-10-09,"Scientist, marine"
-22,42F4BdA841aBadC,Colleen,Hatfield,Female,fknox@example.org,638.584.1090,1949-10-14,Commercial horticulturist
-23,cBbBcA0FCA3C4Bc,Randy,Barnes,Male,huangbill@example.org,001-960-629-7164x67214,1947-12-30,Outdoor activities/education manager
-24,f1f89173353aD90,Janice,Rhodes,Female,juarezdominique@example.net,001-249-314-9742x6996,1999-11-01,Drilling engineer
-25,c5B09fb33e8bA0A,Alfred,Mcneil,Female,cassandramorris@example.com,(468)276-9509x53058,1993-05-28,Systems analyst
-26,c9F2282C40BEC1E,Sean,Levine,Male,sallymiller@example.net,4915828504,2010-10-09,"Conservation officer, nature"
-27,9c1bc7EC53Fb7cE,Louis,Payne,Male,bsullivan@example.net,6232695307,1916-01-29,Counsellor
-28,ddEc50e2A2e3a2B,Brittney,Vega,Female,ayalajose@example.net,945-739-8686,1932-10-31,Recycling officer
-29,66F096D36Ebae11,Judy,Buckley,Male,irosales@example.net,001-654-208-1241x52830,1963-07-28,Art gallery manager
-30,F0fE2faAd78F8b5,Norman,Weber,Male,mconrad@example.com,223.002.0429,1957-05-21,Gaffer
-31,5d2feAfbdCAA6B5,Isaiah,Camacho,Female,jimblake@example.org,001-536-544-3367,1966-04-07,Food technologist
-32,cDa5F303fCd6dEa,Jacqueline,Gallagher,Male,nsampson@example.net,(247)762-8934,1999-02-25,Building services engineer
-33,8Ef7DBfcaB02b6B,Bonnie,Andrews,Female,caitlin24@example.net,+1-253-987-2776x9161,1953-12-21,Seismic interpreter
-34,6Dec5b5542F8ed8,Brandon,Schmidt,Female,mconley@example.net,+1-386-673-1465x006,1931-05-12,"Engineer, biomedical"
-35,3Fb8a7f68e12784,Jackson,Sparks,Female,reynoldsdarryl@example.net,(137)908-3129x65035,1980-11-18,Set designer
-36,035eff50B9A0F24,Melody,Cook,Male,jeannovak@example.org,(826)792-7381,1963-06-25,Research scientist (life sciences)
-37,aa614aAE4B7Cf0C,Leonard,Hurst,Male,clinton78@example.org,941-038-0427x38800,1938-03-13,"Accountant, chartered management"
-38,ACcde95AAe3e6cC,Gene,Rich,Female,luisdeleon@example.org,+1-356-818-6604x89537,1946-08-22,"Surveyor, quantity"
-39,b6a35de5CB6fc25,Cynthia,Wiggins,Female,rosariodave@example.org,(110)858-2437x70190,1984-01-27,Outdoor activities/education manager
-40,e92A191E345fA3A,Tanya,Mckinney,Female,vickihouston@example.com,(830)774-9002x086,2003-03-12,Information systems manager
-41,7D0AcBF6CCac3fd,Matthew,Stone,Female,evelyn31@example.org,952-381-6360,2017-08-23,"Scientist, clinical (histocompatibility and immunogenetics)"
-42,CEFA7BBCef013AE,Kirk,Walsh,Female,stephenfuller@example.org,001-826-496-5529x8661,2009-04-08,Accounting technician
-43,9edBC94aE7cA22a,Willie,Vang,Female,haleymathews@example.net,741.168.6854x067,1978-02-02,Management consultant
-44,fFe7BAA737aDbe2,Miguel,Hill,Female,tyrone56@example.org,5247842945,1930-08-26,Make
-45,5F2f3fAca8B0946,Darren,Andrews,Male,lhernandez@example.com,(975)799-4261,1997-10-04,Retail banker
-46,6bFcfc3cc1BC6B4,Haley,Pugh,Female,molly03@example.org,(746)182-6137x2453,1980-09-16,Commissioning editor
-47,f3BD2cBF7eEb6df,Danielle,Estrada,Female,jvang@example.org,(890)374-9518x772,1930-07-09,"Accountant, chartered management"
-48,Ee4eB129dC7913A,Becky,Brady,Male,erikmueller@example.org,(390)002-0863,1957-06-27,Seismic interpreter
-49,dBCEf340C3657Eb,Caitlyn,Frey,Male,rivasdominique@example.org,805-021-3965x46344,1968-01-26,Jewellery designer
-50,E47FB71DD9ACCd9,Joshua,Sweeney,Male,daisymcgee@example.net,875.994.2100x535,1954-07-28,"Education officer, museum"
-51,eA3fDd79BE9f0E7,Heidi,Escobar,Female,staffordtravis@example.net,601-155-3065x1131,1931-09-25,Estate manager/land agent
-52,aF0eE4547Bc025c,Brian,Oconnell,Female,saralong@example.net,952-283-1423x733,1911-10-23,Physiotherapist
-53,9F5DeD7aD228F5a,Beverly,Esparza,Female,iphelps@example.net,+1-327-578-8754x6771,1930-12-09,Passenger transport manager
-54,D3Fa0220dDE4d36,Nathaniel,Rivas,Female,roberto29@example.com,(655)887-2040x37888,1908-11-17,Call centre manager
-55,60FdBFd5e7BE8fF,Debra,Payne,Female,yolanda07@example.org,001-731-525-8400x52593,1927-08-20,Special educational needs teacher
-56,D8bF5Ab2b98caff,Mackenzie,Rocha,Female,abbottyvette@example.net,4225525458,1980-10-21,Museum/gallery exhibitions officer
-57,CD8d33aA25bc8BB,Courtney,Watkins,Female,ochang@example.org,210.683.2761x5883,2003-12-07,Pension scheme manager
-58,Fac3BfFf0A3d03c,Fred,Olsen,Female,amyanderson@example.com,497-774-3053,1910-04-10,Archaeologist
-59,e552D7ddafe1FFb,Ryan,Nelson,Female,qnorman@example.org,956.330.2951,1924-05-02,Historic buildings inspector/conservation officer
-60,0f8deedb629A5f6,Grace,Phelps,Male,clarkeangela@example.net,(034)867-8827x6777,1909-10-15,Petroleum engineer
-61,bB9e49E506F65ed,Shari,Daugherty,Male,kalvarado@example.org,001-951-655-4798x6124,1944-11-24,Curator
-62,Ed724605A403D91,Kelli,Garner,Male,jodyvincent@example.org,995.000.4213x0982,2010-01-17,Retail banker
-63,0aBE5ACb18E0c10,Jackie,Bennett,Male,hutchinsonkirk@example.com,001-740-937-0846x0087,1915-11-11,Neurosurgeon
-64,5D2cb63CaAF53f6,Leslie,Conway,Female,floreschristina@example.org,795.782.4384x555,1983-11-06,Chiropractor
-65,Ee6974f90eeCe18,Harold,Barnett,Female,nathan65@example.org,+1-026-265-6392,1943-03-15,"Biochemist, clinical"
-66,cEf02C076afa07f,Larry,Harper,Male,maria32@example.org,+1-244-630-3792x4121,2021-05-05,"Scientist, water quality"
-67,9Df5Ba591bF3EFf,Mike,Ward,Female,imccullough@example.com,116-729-5046,1967-11-09,Hydrologist
-68,3faB1CBfEFBDdD4,Brittney,Rubio,Female,corey92@example.com,593.976.2528,1959-12-24,"Biochemist, clinical"
-69,Ebcefdf75eCb0a9,Frank,Pineda,Male,daltoncalvin@example.net,(035)961-5060x9182,1926-03-10,Hospital pharmacist
-70,e75e5DBfcb68887,Sandra,Wu,Male,ubanks@example.com,+1-096-606-6454x067,1925-04-28,Warehouse manager
-71,6a53a8D41dDF6de,Ryan,Benton,Male,lopezdebbie@example.org,+1-695-557-9948x485,2020-10-06,Physiological scientist
-72,F0d3bD1aaf9E3Bc,Tamara,Hull,Male,meagan39@example.net,017.665.3744x7944,1933-01-31,English as a second language teacher
-73,5bC87340799FBD0,Jean,Ritter,Female,kristina76@example.com,(954)060-1066,1985-08-06,Financial trader
-74,dBfA17Aaf16b4ab,Veronica,Briggs,Female,weissbridget@example.com,+1-521-589-2387x48490,1974-06-08,Structural engineer
-75,c935b7Eb6FA0B0F,Kim,Andrews,Female,wpetersen@example.org,7677125383,1990-11-15,"Biochemist, clinical"
-76,b3e15e65Ca2CcBf,Tina,Cunningham,Male,wongmary@example.org,079-907-5051,1956-11-29,Race relations officer
-77,dade3452F0c32FD,Jonathon,Atkinson,Male,gailfrench@example.net,874-037-2032x932,2011-07-19,"Psychologist, forensic"
-78,AdEd6cfD85DeC46,Jermaine,Reid,Female,vpaul@example.com,(742)214-8691,1974-08-18,Newspaper journalist
-79,DAf111987098ae4,Regina,Stevens,Male,xpoole@example.net,891-359-2684,2011-11-28,Public house manager
-80,6e6a5b885F6496d,Terrence,Huff,Male,cassandra80@example.org,221.800.6408x5416,1944-02-27,Careers information officer
-81,12DCb4ED8E01D5C,Tyler,Foley,Female,johnathan72@example.org,001-386-469-3075x8030,1908-09-19,Economist
-82,E1cB5cA8CA7CC0a,Andrew,Waters,Male,nhall@example.net,+1-376-865-2765x3351,1948-05-14,Jewellery designer
-83,AedDfaE8Cf49F07,Reginald,Stephenson,Male,erikaball@example.net,+1-832-500-6044x475,2010-02-08,Contracting civil engineer
-84,bff9853aFAeF772,Douglas,Reese,Female,nixonvanessa@example.net,001-834-660-8312x9864,1961-11-11,Higher education lecturer
-85,E883773cA5219Be,Helen,Williamson,Female,melvin08@example.net,001-377-726-4229,1911-08-11,"Lecturer, further education"
-86,CB19EafEbBfF9eC,Mario,Vaughn,Male,oblake@example.com,160-144-5039x12276,1990-07-08,Research scientist (life sciences)
-87,5834700fbEd2771,Chelsea,Dickson,Male,johnnyhendricks@example.net,001-698-651-0138x18588,1958-05-13,"Teacher, early years/pre"
-88,2b0Ab1Dc9E01D7E,Dustin,Bailey,Male,pbarron@example.net,+1-965-621-1157x345,1908-08-22,Travel agency manager
-89,3f3a3D89ad042Dd,Harry,Medina,Female,olsenmalik@example.net,+1-451-099-5805,1947-08-24,Technical sales engineer
-90,9425E2F38C408ef,Kathy,Haney,Female,teresa37@example.com,(164)105-8456,1955-09-02,Charity fundraiser
-91,F0aeC9c2759F3C6,Alison,Nixon,Female,zmiles@example.net,3506680871,1941-07-10,Patent attorney
-92,d6EA619A7C4aA95,Jamie,Hardy,Female,sheenadouglas@example.com,(900)803-9295x11533,1994-07-17,"Conservator, furniture"
-93,2A33E7Cad1bb0F5,Melody,Cox,Female,evan90@example.org,(626)520-5080x3511,1974-07-30,Dance movement psychotherapist
-94,d181FFB7d3E68bb,Xavier,Cole,Male,nicolas90@example.org,8164259975,1938-11-29,Financial planner
-95,feaBf8dAE0C0d6F,Dillon,Guzman,Female,angelanavarro@example.net,971-992-4521,1942-04-01,Air broker
-96,5eFda7caAeB260E,Dennis,Barnes,Female,bmartin@example.org,001-095-524-2112x257,1954-07-30,Software engineer
-97,CCbFce93d3720bE,Steve,Patterson,Female,latasha46@example.net,001-865-478-5157,1932-04-29,Barrister
-98,2fEc528aFAF0b69,Wesley,Bray,Male,regina11@example.org,995-542-3004x76800,1994-12-28,Police officer
-99,Adc7ad9B6e4A1Fe,Summer,Oconnell,Female,alexiscantrell@example.org,001-273-685-6932x092,2012-04-12,Broadcast journalist
-100,b8D0aD3490FC7e1,Mariah,Bernard,Male,pcopeland@example.org,(341)594-6554x44657,2016-11-15,IT sales professional
+age,income,score,gender,department
+38,60340.18,72.8,Male,Sales
+30,74607.77,73.39,Female,Sales
+40,70062.97,69.89,Male,Sales
+36,38941.15,78.31,Female,Sales
+30,64086.91,88.62,Female,Engineering
+40,73276.13,65.26,Female,Sales
+52,61028.51,91.64,Female,Engineering
+34,70182.75,82.81,Male,HR
+42,82159.52,87.64,Male,Engineering
+24,69308.22,78.02,Female,Engineering
+27,59241.01,86.06,Male,Sales
+40,69586.15,58.58,Female,Sales
+49,57883.54,87.46,Female,Sales
+39,56310.74,59.44,Female,Engineering
+33,51431.61,90.04,Female,Sales
+36,76324.37,93.71,Female,Engineering
+25,45360.43,68.59,Female,Finance
+41,75920.78,65.57,Male,Finance
+44,62498.23,85.55,Female,Sales
+32,37809.02,67.11,Male,Engineering
+32,60779.44,89.16,Male,HR
+38,28699.66,61.7,Female,Engineering
+32,64131.6,62.53,Male,Sales
+35,67508.01,93.25,Male,Engineering
+55,48299.37,82.26,Male,Finance
+34,57606.12,88.49,Female,Engineering
+33,81404.05,69.68,Female,Sales
+30,49425.29,82.35,Female,HR
+43,42234.2,79.39,Male,Sales
+34,75261.62,79.71,Female,Engineering
+30,81513.63,82.57,Female,Finance
+48,56048.04,78.71,Male,Sales
+49,69149.02,73.45,Male,Sales
+31,73439.19,67.93,Male,Engineering
+19,46347.7,85.67,Female,Sales
+45,49691.02,66.15,Female,Sales
+30,72001.37,82.92,Female,Engineering
+43,77905.19,66.4,Male,Engineering
+18,63317.45,80.51,Female,HR
+44,44562.41,84.89,Female,Engineering
+25,81831.79,65.87,Female,Engineering
+43,49097.38,60.16,Female,Sales
+36,51643.21,62.72,Male,HR
+27,60450.39,79.82,Male,Engineering
+32,76204.09,88.58,Female,Sales
+42,67101.69,59.62,Female,Engineering
+37,61393.25,84.43,Female,Engineering
+41,62022.75,70.29,Male,Engineering
+54,56565.69,75.23,Female,HR
+22,63255.81,91.44,Male,Engineering
+51,23115.72,69.95,Male,Engineering
+37,52144.1,74.75,Female,Sales
+28,59137.19,58.49,Female,HR
+24,41036.82,60.94,Male,Engineering
+34,61022.2,67.31,Male,Sales
+44,53341.87,59.0,Male,Engineering
+35,78821.18,80.73,Male,Sales
+50,76449.26,73.35,Female,Sales
+23,49944.53,77.73,Female,Sales
+36,54039.11,64.29,Male,Engineering
+25,55038.68,68.65,Female,Engineering
+39,50128.43,81.9,Female,Engineering
+44,58535.32,92.75,Female,Engineering
+32,46142.33,59.82,Male,Engineering
+13,41302.0,90.05,Female,HR
+38,64095.25,78.77,Male,Finance
+40,64183.88,78.3,Male,Finance
+40,45543.9,76.01,Male,Finance
+47,67639.62,60.5,Male,Sales
+26,47789.49,61.24,Male,HR
+42,59291.15,79.63,Male,Engineering
+47,66664.47,70.27,Male,Sales
+20,55563.04,91.02,Female,Sales
+39,61911.63,72.64,Female,Sales
+31,49286.41,63.16,Male,HR
+35,53445.93,83.73,Female,Engineering
+39,53323.83,68.56,Female,Engineering
+32,46294.48,76.92,Female,Finance
+30,53701.94,83.12,Male,Engineering
+36,35867.96,90.41,Female,Sales
+26,49615.0,86.52,Female,Finance
+26,52296.62,82.35,Female,Sales
+42,52669.66,82.47,Male,Sales
+26,52860.53,92.05,Female,Engineering
+42,55197.07,68.65,Female,Engineering
+40,62232.74,58.04,Female,Finance
+20,67368.72,67.79,Male,Sales
+30,47553.05,65.84,Male,Sales
+47,40358.39,81.83,Female,Engineering
+27,42453.42,80.81,Female,Engineering
+32,49666.36,79.36,Male,Finance
+40,51425.02,58.58,Female,Engineering
+43,45990.05,84.24,Male,Sales
+34,39150.48,69.65,Female,Engineering
+31,50070.43,81.94,Female,Sales
+49,58358.55,78.04,Female,Finance
+52,63735.38,70.34,Female,Sales
+45,48753.5,62.84,Male,Engineering
+37,50631.03,61.4,Female,Sales
+29,43952.92,87.93,Male,HR
+29,55591.29,91.06,Female,Sales
+41,44970.43,81.39,Female,Finance
+40,63450.66,61.72,Female,Sales
+49,32783.74,72.47,Male,Finance
+42,51324.81,84.24,Female,Sales
+22,59914.4,86.07,Male,Engineering
+45,58389.85,62.26,Male,Engineering
+27,91009.44,58.0,Female,Engineering
+33,60547.4,83.64,Male,Finance
+38,42947.29,70.84,Female,HR
+54,54758.96,67.16,Male,Sales
+64,32908.8,58.46,Male,Engineering
+41,54952.2,77.45,Female,Engineering
+34,45170.27,88.64,Female,HR
+41,67900.07,92.47,Male,Sales
+44,48855.98,78.37,Female,Engineering
+33,54482.04,76.52,Female,Sales
+52,47737.75,61.06,Female,Engineering
+38,78605.07,77.76,Male,Engineering
+40,51823.84,71.68,Female,Sales
+42,79823.24,79.86,Female,Engineering
+40,66583.97,71.99,Female,Finance
+44,62266.87,66.65,Male,Engineering
+30,60793.53,61.42,Female,Engineering
+31,61119.36,69.34,Female,Engineering
+26,30940.26,61.48,Female,HR
+40,52374.52,64.37,Male,Sales
+43,66987.05,93.54,Female,Sales
+40,55364.34,73.99,Female,Engineering
+51,37732.53,77.15,Male,Engineering
+36,55318.74,89.45,Male,Sales
+42,78153.37,93.84,Female,HR
+26,72209.59,78.98,Male,Finance
+33,55193.95,87.25,Female,Engineering
+42,68368.84,69.77,Female,Sales
+44,51235.41,69.01,Female,Finance
+33,33849.67,72.5,Male,Sales
+35,43981.94,82.21,Male,HR
+22,76317.55,82.56,Female,Engineering
+33,52438.09,69.35,Male,Finance
+44,52836.01,62.8,Female,HR
+41,52102.1,80.77,Male,Finance
+41,80753.78,62.62,Male,Sales
+36,77137.47,78.83,Male,Engineering
+36,84844.14,82.96,Female,Finance
+30,53932.41,83.22,Female,Engineering
+42,59843.12,85.12,Male,Engineering
+40,36283.65,89.42,Male,HR
+40,75200.15,76.0,Male,HR
+31,40818.87,84.29,Female,Finance
+17,58818.08,80.29,Male,Engineering
+46,41735.07,64.72,Female,HR
+32,48344.73,58.92,Female,HR
+28,45115.59,68.24,Female,Engineering
+42,48097.62,73.95,Male,Sales
+32,48991.4,80.22,Female,Engineering
+46,48872.51,88.6,Male,Engineering
+42,66833.34,65.06,Male,Finance
+42,41636.78,62.52,Female,Sales
+24,58867.04,92.69,Female,HR
+47,71833.47,61.89,Male,Finance
+38,49328.45,75.23,Male,Engineering
+33,46667.05,79.08,Female,HR
+37,53003.18,77.49,Male,Sales
+20,71336.43,61.1,Female,Finance
+40,58523.4,60.05,Female,Engineering
+27,49094.21,61.8,Male,Finance
+24,62290.4,79.08,Male,Engineering
+22,41670.2,77.6,Male,Engineering
+46,64857.67,66.41,Female,HR
+30,61311.9,80.96,Female,Sales
+50,51998.49,87.52,Male,Sales
+31,45098.38,59.5,Female,Sales
+21,44473.15,75.93,Female,HR
+26,62952.63,82.82,Male,Engineering
+47,71976.75,67.08,Female,Engineering
+35,47715.0,69.08,Male,Engineering
+31,61959.03,80.09,Male,Sales
+37,28868.65,90.33,Male,Engineering
+41,48399.97,87.16,Male,Engineering
+46,55596.23,78.99,Male,Sales
+49,44174.12,84.29,Male,Engineering
+33,43825.42,71.13,Female,Sales
+24,47318.87,81.07,Female,Finance
+32,59798.51,74.78,Female,Engineering
+38,53564.72,64.84,Male,Sales
+27,26902.99,83.26,Male,Sales
+27,28430.9,78.03,Male,Sales
+39,48110.75,70.91,Female,HR
+36,61949.93,90.81,Female,Sales
+36,20282.44,58.75,Male,Sales
+29,49503.51,69.37,Male,Engineering
+34,49158.78,60.05,Female,Sales
+28,74048.39,85.59,Male,Sales
+44,50994.72,83.28,Male,Engineering
+45,60978.86,69.93,Female,Engineering
+19,57836.34,82.32,Female,Finance
+28,28302.64,72.25,Male,Sales
+23,65986.69,85.23,Male,Sales
+30,58800.15,74.35,Female,Finance
+35,62607.49,72.84,Male,HR
+23,107041.09,91.65,Male,Sales
+28,28906.53,67.03,Male,HR
+27,78421.06,62.34,Male,Finance
+38,52263.18,79.04,Male,Sales
+37,59735.28,92.9,Female,Sales
+30,55408.34,71.6,Male,Sales
+38,50484.93,60.23,Male,Finance
+31,48592.17,70.21,Female,Sales
+34,60283.61,76.21,Female,Engineering
+51,36276.74,63.83,Female,Finance
+48,65757.53,81.69,Female,Sales
+24,50589.47,93.92,Male,Engineering
+43,41309.1,74.26,Female,Sales
+43,50149.83,70.77,Male,Sales
+26,72342.94,72.43,Female,Finance
+43,49040.64,62.15,Male,Engineering
+50,60659.9,89.8,Female,HR
+26,46497.57,72.93,Female,Sales
+28,65852.98,71.94,Male,Engineering
+45,64911.6,81.75,Female,Finance
+38,80031.91,73.91,Female,Sales
+41,53717.67,81.34,Female,Engineering
+39,64692.51,60.21,Male,Sales
+40,57274.88,87.29,Female,Finance
+24,72846.33,91.86,Male,Engineering
+45,46655.18,81.36,Male,Engineering
+47,65685.07,92.36,Male,Engineering
+34,53468.94,63.45,Male,Engineering
+36,55165.55,75.19,Female,HR
+22,57192.78,79.67,Male,Sales
+41,59279.13,78.94,Female,Engineering
+41,54489.02,72.45,Male,Engineering
+35,58791.27,70.17,Male,Engineering
+46,76515.53,62.57,Male,Finance
+33,68810.85,72.1,Male,Engineering
+41,67299.01,63.86,Male,Finance
+27,50077.99,84.44,Male,Sales
+36,44439.87,65.52,Female,Engineering
+34,68418.91,60.11,Male,Finance
+38,67388.61,77.89,Male,Sales
+33,75144.72,79.43,Male,HR
+35,48148.25,89.39,Female,Finance
+43,53015.87,78.77,Female,Engineering
+32,34686.71,70.44,Male,Engineering
+22,50897.88,86.91,Male,HR
+52,68955.42,77.45,Male,Engineering
+48,49935.56,60.85,Female,Engineering
+24,64326.24,78.37,Male,Engineering
+42,53523.46,90.69,Male,Engineering
+31,60212.74,72.27,Male,HR
+38,41080.01,68.67,Male,Engineering
+39,57107.72,63.16,Male,Sales
+34,17115.23,63.45,Female,Sales
+29,53570.35,73.58,Male,Sales
+30,34803.85,79.44,Female,Engineering
+28,71677.93,60.9,Male,HR
+29,66106.3,91.82,Male,Engineering
+35,62066.72,85.18,Female,HR
+30,75773.08,79.12,Male,Finance
+42,43664.09,87.82,Female,Sales
+49,78715.72,60.89,Female,Sales
+31,68118.49,75.17,Male,Sales
+38,52924.78,80.68,Female,Sales
+40,70763.06,87.83,Male,Finance
+40,41618.18,86.2,Female,Finance
+37,45281.32,67.97,Male,Engineering
+43,48088.33,91.87,Female,Sales
+40,49123.29,62.48,Male,Finance
+25,42264.75,89.5,Female,Finance
+44,71900.08,92.95,Female,Sales
+44,52634.89,64.38,Female,Sales
+29,60582.56,83.99,Female,Engineering
+36,48585.43,59.45,Female,Finance
+42,32332.16,72.6,Female,Engineering
+34,59510.75,76.59,Male,Sales
+46,31140.69,78.9,Male,Engineering
+57,55107.76,91.69,Male,Engineering
+29,38211.9,82.2,Male,Sales
+24,81834.59,75.33,Male,Finance
+39,67847.72,87.15,Female,Engineering
+42,57374.8,92.22,Male,Sales
+34,72428.19,58.79,Female,Engineering
+49,44997.89,93.37,Male,Engineering
+24,63065.23,61.1,Male,Sales
+42,58597.54,87.32,Female,Sales
+31,59432.26,68.09,Female,Engineering
+51,72540.6,62.76,Female,Engineering
+54,65522.4,73.83,Female,Engineering
+29,59753.41,81.18,Male,Engineering
+31,34486.46,71.71,Female,Finance
+44,43519.4,59.96,Male,Finance
+33,54404.78,79.58,Male,Engineering
+36,57213.84,90.49,Male,Sales
+36,41307.35,71.8,Male,Finance
+19,87351.8,65.79,Male,Engineering
+36,75713.12,73.93,Female,HR
+30,63827.54,59.74,Female,Finance
+32,56936.48,87.54,Male,Engineering
+49,53241.28,87.75,Male,Engineering
+25,43625.06,79.17,Male,Finance
+43,57007.25,70.71,Male,Sales
+33,59350.78,86.79,Female,Engineering
+33,39857.11,77.97,Male,Engineering
+43,60344.29,87.73,Female,Sales
+39,53981.63,80.73,Male,Sales
+41,31198.5,86.24,Female,HR
+45,44814.99,79.55,Male,Finance
+33,50623.13,72.91,Female,Engineering
+30,80539.94,92.49,Male,Sales
+26,63235.19,77.48,Female,Sales
+29,38638.74,79.78,Male,Sales
+63,62318.47,65.94,Male,Engineering
+47,35885.05,80.52,Female,Finance
+24,70074.98,78.58,Female,Finance
+24,49875.38,64.65,Female,Sales
+40,54782.73,60.15,Female,Sales
+41,73235.36,79.76,Female,Engineering
+41,39266.87,85.49,Male,Sales
+34,37837.46,76.84,Male,Sales
+35,48413.21,66.16,Male,Sales
+39,69498.93,81.99,Female,Finance
+37,36248.5,60.88,Male,Sales
+16,19181.98,73.91,Male,Engineering
+34,50134.93,63.88,Female,HR
+28,63172.63,64.64,Female,Engineering
+38,71603.4,65.28,Male,Sales
+63,49978.9,71.92,Male,Engineering
+39,50651.45,59.84,Male,Sales
+33,71000.71,72.32,Male,HR
+44,31693.36,76.42,Male,Sales
+40,50949.23,75.4,Female,HR
+40,58475.51,71.78,Female,Sales
+41,61839.84,88.21,Female,Engineering
+55,49372.51,63.23,Male,HR
+26,56447.73,76.21,Female,Engineering
+40,23651.74,60.23,Male,Engineering
+28,47442.77,60.56,Male,Sales
+41,61895.61,78.66,Female,Engineering
+28,43230.18,78.38,Male,Engineering
+32,56766.79,89.61,Male,Sales
+33,61809.34,78.08,Female,Sales
+45,51546.86,92.55,Male,Sales
+44,58216.03,59.75,Female,Finance
+25,43484.48,61.53,Male,Sales
+36,53314.05,59.59,Female,Finance
+30,63932.81,64.67,Male,Engineering
+25,58040.65,77.49,Male,Sales
+34,48375.09,81.24,Female,Finance
+33,58914.81,59.64,Male,Sales
+58,65289.93,92.05,Male,HR
+40,29350.76,88.32,Male,Engineering
+24,71067.96,68.68,Male,Engineering
+31,51628.69,60.78,Male,Sales
+45,61531.37,64.12,Male,Sales
+55,71564.21,62.57,Female,Finance
+22,38168.24,62.44,Male,Engineering
+19,46777.27,76.67,Male,Finance
+53,52248.87,66.85,Male,Finance
+40,45811.2,70.89,Male,Engineering
+28,78554.18,93.62,Female,Engineering
+41,44861.96,82.64,Male,Finance
+12,48777.89,92.16,Female,Finance
+36,58657.06,63.13,Male,Sales
+39,40372.06,71.76,Female,Engineering
+44,50856.15,77.97,Female,Sales
+27,60126.89,60.76,Female,Sales
+37,51672.81,58.15,Female,Engineering
+28,54785.97,82.14,Female,HR
+38,49118.68,81.11,Male,Engineering
+28,36311.89,72.79,Male,Engineering
+32,60180.71,75.63,Female,Sales
+27,78814.13,72.96,Male,Engineering
+42,56239.22,58.86,Male,Engineering
+44,58928.43,70.07,Female,Sales
+34,65005.4,64.37,Male,Engineering
+36,39498.7,61.54,Female,Engineering
+23,78132.69,92.44,Female,Engineering
+33,58630.27,79.58,Female,Finance
+36,77214.14,84.23,Female,Sales
+60,46470.57,69.35,Male,Sales
+26,79634.8,72.15,Male,Sales
+49,66077.02,66.53,Male,Finance
+45,63189.52,61.49,Male,Engineering
+39,59042.32,64.45,Female,Sales
+52,52769.13,86.71,Female,HR
+39,71606.91,82.39,Male,Sales
+40,57824.68,77.69,Male,Engineering
+36,30428.09,75.1,Female,Sales
+47,41476.58,91.21,Male,Engineering
+46,53584.01,60.62,Male,Sales
+30,60029.99,68.1,Male,HR
+24,55264.35,70.6,Female,Engineering
+34,71846.62,86.17,Female,HR
+29,30635.68,93.73,Female,Engineering
+35,57866.64,66.66,Female,HR
+47,32366.27,89.48,Male,Sales
+32,65876.26,87.9,Male,Engineering
+36,54772.04,66.09,Female,Engineering
+37,61454.93,72.38,Male,Finance
+44,44769.52,72.75,Female,Engineering
+16,72633.04,93.22,Female,Engineering
+31,69542.42,64.51,Female,Engineering
+38,63586.08,86.77,Female,Sales
+47,54316.28,70.03,Female,Sales
+32,63538.14,84.31,Female,Engineering
+19,46810.4,73.12,Male,Engineering
+42,67122.22,78.82,Male,Engineering
+30,77443.25,87.97,Male,Engineering
+25,69917.94,86.95,Female,Sales
+30,46515.17,89.19,Male,HR
+34,60698.43,60.15,Female,Engineering
+31,39189.16,82.91,Male,Engineering
+16,63441.07,63.04,Female,Sales
+44,61857.84,72.97,Male,Finance
+47,31692.39,77.75,Female,Finance
+42,40896.81,72.5,Female,HR
+26,52319.19,76.71,Male,Engineering
+34,52088.82,93.87,Male,Engineering
+36,40276.8,62.87,Female,Engineering
+41,61056.72,82.32,Male,Engineering
+42,59269.16,72.26,Male,Sales
+29,53474.5,62.79,Female,HR
+37,46174.71,63.71,Female,Finance
+40,69633.19,92.17,Female,HR
+49,77520.29,89.67,Male,Engineering
+42,49713.7,90.65,Male,Sales
+43,48041.83,93.7,Female,Engineering
+37,62385.7,65.5,Female,Engineering
+49,51345.62,70.8,Female,HR
+40,54187.84,82.09,Male,Engineering
+28,65615.49,75.42,Male,Sales
+49,31178.37,73.06,Male,Engineering
+42,73137.93,70.88,Male,Sales
+32,56944.85,79.38,Male,HR
+32,50650.59,78.72,Male,Engineering
+39,54839.96,63.81,Female,HR
+40,55511.58,74.98,Male,Engineering
+38,33494.38,77.92,Female,Sales
+39,75434.2,78.53,Female,HR
+51,56537.23,65.56,Female,Sales
+46,61759.03,84.72,Male,Finance
+38,68370.15,58.91,Female,Engineering
+44,42724.89,70.77,Female,Sales
+27,62155.13,86.09,Female,Sales
+40,52520.67,78.3,Female,Finance
+52,67008.02,67.4,Female,Engineering
+34,28346.04,83.02,Female,HR
+28,54711.77,78.43,Male,Sales
+30,48163.33,86.66,Female,Engineering
+26,61619.42,84.46,Male,Sales
+29,62110.57,79.96,Female,Engineering
+33,46800.86,75.57,Male,Sales
+23,46741.74,62.79,Male,Finance
+36,54561.35,67.41,Female,Sales
+44,44343.65,73.09,Female,Sales
+28,66945.79,79.57,Male,Sales
+50,51200.31,76.49,Male,Engineering
+41,18209.15,68.37,Female,Engineering
+45,51127.31,58.23,Male,Sales
+30,42498.93,75.86,Female,Engineering
+44,34793.41,68.28,Male,Engineering
+26,39913.45,84.45,Female,Sales
+44,57422.31,58.86,Female,Engineering
+38,73272.33,79.05,Male,Engineering
+41,60071.4,91.89,Male,Sales
+25,48115.46,64.28,Male,Engineering
+28,61926.75,74.98,Female,Finance
+41,50031.83,61.29,Female,Finance
+27,46970.2,80.52,Female,HR
+40,40993.29,77.82,Male,Engineering
+24,33226.23,72.67,Male,HR
+44,50930.99,76.77,Male,HR
+25,58054.7,90.28,Male,HR
+41,54743.89,65.07,Female,Engineering
+42,50592.43,58.81,Female,Sales
+30,43705.3,89.02,Female,HR
+41,63907.2,78.78,Male,Sales
+38,38877.29,90.06,Female,Sales
+31,66088.36,79.49,Female,Sales
+27,42971.18,87.17,Female,Sales
+18,46218.34,73.47,Female,Engineering
+39,36931.79,84.99,Male,Sales
+22,49481.77,90.87,Male,Engineering
+37,68679.06,78.6,Female,Sales
+34,62703.17,64.51,Male,Engineering
+42,68719.49,67.68,Male,Sales
+33,62787.85,65.15,Female,Engineering
+33,41652.29,66.89,Female,Sales
+43,51699.74,69.03,Female,HR
+39,45857.41,77.98,Male,Engineering
+39,73297.47,79.17,Male,Engineering
+40,40441.75,73.35,Female,Engineering
+22,67618.07,80.16,Female,Finance
+43,67608.4,60.94,Female,Sales
+42,79785.06,61.16,Female,Sales
+27,50674.07,64.19,Female,Engineering
+34,65260.19,76.65,Female,Sales
+36,85661.47,65.7,Male,Finance
+35,47970.66,68.2,Female,HR

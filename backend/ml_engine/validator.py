@@ -1,143 +1,86 @@
 import pandas as pd
-import numpy as np
-from typing import Dict, Any, Optional
+import json
+import os
+import sys
 
-from ml_engine import (
-    info_quality_check,
-    consistency_check,
-    temporal_check,
-    structural_check,
-    statistical_check,
-    semantic_check,
-    generative_check,
-    drift_bias_check,
-    score_fusion
-)
+# Internal imports
+from .utils.column_detector import detect_columns
+from .checks.duplicate_check import check_duplicate_ids
+from .checks.missing_value_check import check_missing_values
+from .checks.datatype_check import check_datatypes
+from .checks.email_check import check_emails
+from .checks.age_range_check import check_age_range
+from .checks.website_check import check_websites
+from .checks.salary_check import check_salary
+from .checks.variance_check import check_variance
+from .checks.country_check import check_countries
+from .checks.phone_check import check_phone_numbers
 
+from .score_engine import calculate_trust_score
+from .twin.twin_validator import run_twin_validation
 
-def make_json_safe(obj: Any) -> Any:
-    """
-    Recursively convert ALL non-JSON-safe objects
-    (NumPy, sklearn, torch outputs) into native Python types.
-    This function is intentionally defensive.
-    """
-    # Dict
-    if isinstance(obj, dict):
-        return {str(k): make_json_safe(v) for k, v in obj.items()}
+def run_validation_df(df: pd.DataFrame):
+    """Standard quality check for a single dataset DataFrame."""
+    detected_columns = detect_columns(df)
 
-    # List / Tuple / Set
-    if isinstance(obj, (list, tuple, set)):
-        return [make_json_safe(v) for v in obj]
+    report = {}
+    report["duplicate_check"] = check_duplicate_ids(df, detected_columns)
+    report["missing_value_check"] = check_missing_values(df)
+    report["datatype_check"] = check_datatypes(df)
+    report["email_check"] = check_emails(df, detected_columns)
+    report["age_range_check"] = check_age_range(df, detected_columns)
+    report["website_check"] = check_websites(df, detected_columns)
+    report["salary_check"] = check_salary(df, detected_columns)
+    report["variance_check"] = check_variance(df)
+    report["country_check"] = check_countries(df, detected_columns)
+    report["phone_check"] = check_phone_numbers(df, detected_columns)
 
-    # NumPy arrays
-    if isinstance(obj, np.ndarray):
-        return obj.tolist()
-
-    # NumPy scalar types (VERY IMPORTANT)
-    if isinstance(obj, np.generic):
-        return obj.item()
-
-    # Pandas NA / NaT
-    if obj is pd.NA:
-        return None
-
-    # Everything else (int, float, str, bool, None)
-    return obj
-
-
-def run_validation_df(df: pd.DataFrame, reference_df: Optional[pd.DataFrame] = None) -> Dict[str, Any]:
-    validation_reports: Dict[str, Dict[str, Any]] = {}
-
-    final_result = {
-        "status": "FAIL",
-        "reason": "Validation process did not complete successfully.",
-        "final_trust_score": 0.0,
-        "score_breakdown": {},
-        "all_reports": {}
+    score_summary = calculate_trust_score(report)
+    
+    return {
+        "status": "PASS" if score_summary["final_status"] == "PASSED" else "FAIL",
+        "final_trust_score": score_summary["trust_score"],
+        "reason": "Score below threshold" if score_summary["final_status"] == "FAILED" else "Success",
+        "all_reports": report,
+        "score_summary": score_summary
     }
 
-    # Run validation modules
-    validation_reports["information_quality_report"] = info_quality_check.check_information_quality(df)
-    validation_reports["consistency_report"] = consistency_check.check_consistency(df)
-    validation_reports["temporal_report"] = temporal_check.check_temporal_consistency(df)
-    validation_reports["structural_report"] = structural_check.check_structural_integrity(df)
-    validation_reports["statistical_report"] = statistical_check.check_statistical_properties(df)
-    validation_reports["semantic_report"] = semantic_check.check_semantic_properties(df)
-    validation_reports["generative_report"] = generative_check.check_generative_properties(df)
-    validation_reports["drift_bias_report"] = drift_bias_check.check_drift_and_bias(df, reference_df)
+def run_validation(file_path: str):
+    """Standard quality check for a single dataset file."""
+    df = pd.read_csv(file_path)
+    return run_validation_df(df)
 
-    fused = score_fusion.fuse_scores(validation_reports)
-    final_trust_score = fused.get("final_trust_score", 0.0)
+def run_twin_validation_wrapper(ref_path: str, cand_path: str):
+    """Twin validation comparing a candidate dataset to a reference dataset."""
+    ref_df = pd.read_csv(ref_path)
+    cand_df = pd.read_csv(cand_path)
+    
+    results = run_twin_validation(ref_df, cand_df)
+    
+    # Map Twin Results to the expected report format
+    score = results["twin_similarity_score"]
+    status = "PASS" if results["behavior_match"] else "FAIL"
+    
+    # Inject 'score' and 'summary' into each component for frontend compatibility
+    component_scores = results["component_scores"]
+    for key, data in component_scores.items():
+        # Map specific similarity scores to a generic 'score' key
+        score_key = next((k for k in data.keys() if "similarity_score" in k), None)
+        if score_key:
+            data["score"] = data[score_key]
+        
+        # Add a summary if not present
+        if "summary" not in data:
+            data["summary"] = f"Similarity match in {key.replace('_', ' ')}: {data.get('score', 0)}%"
 
-    final_result["final_trust_score"] = float(final_trust_score)
-    final_result["score_breakdown"] = fused.get("score_breakdown", {})
-
-    threshold = 70.0
-    if final_trust_score >= threshold:
-        final_result["status"] = "PASS"
-        final_result["reason"] = "Data quality meets the required trust threshold."
-    else:
-        final_result["status"] = "FAIL"
-        final_result["reason"] = "Data quality does not meet the required trust threshold."
-
-    final_result["all_reports"] = validation_reports
-
-    return make_json_safe(final_result)
-
-
-def run_validation(csv_path: str, reference_path: Optional[str] = None) -> Dict[str, Any]:
-    validation_reports: Dict[str, Dict[str, Any]] = {}
-
-    final_result = {
-        "status": "FAIL",
-        "reason": "Validation process did not complete successfully.",
-        "final_trust_score": 0.0,
-        "score_breakdown": {},
-        "all_reports": {}
+    return {
+        "status": status,
+        "final_trust_score": score,
+        "reason": f"Similarity score: {score}% - Risk Level: {results['risk_level']}",
+        "all_reports": component_scores,
+        "score_summary": {
+            "final_status": "PASSED" if status == "PASS" else "FAILED",
+            "trust_score": score,
+            "risk_level": results["risk_level"]
+        }
     }
-
-    # Load primary dataset
-    try:
-        df = pd.read_csv(csv_path)
-    except Exception as e:
-        final_result["reason"] = f"Error loading CSV: {e}"
-        return final_result
-
-    # Load reference dataset (optional)
-    reference_df = None
-    if reference_path:
-        try:
-            reference_df = pd.read_csv(reference_path)
-        except Exception:
-            reference_df = None
-
-    # Run validation modules
-    validation_reports["information_quality_report"] = info_quality_check.check_information_quality(df)
-    validation_reports["consistency_report"] = consistency_check.check_consistency(df)
-    validation_reports["temporal_report"] = temporal_check.check_temporal_consistency(df)
-    validation_reports["structural_report"] = structural_check.check_structural_integrity(df)
-    validation_reports["statistical_report"] = statistical_check.check_statistical_properties(df)
-    validation_reports["semantic_report"] = semantic_check.check_semantic_properties(df)
-    validation_reports["generative_report"] = generative_check.check_generative_properties(df)
-    validation_reports["drift_bias_report"] = drift_bias_check.check_drift_and_bias(df, reference_df)
-
-    # Fuse scores
-    fused = score_fusion.fuse_scores(validation_reports)
-    final_trust_score = fused.get("final_trust_score", 0.0)
-
-    final_result["final_trust_score"] = float(final_trust_score)
-    final_result["score_breakdown"] = fused.get("score_breakdown", {})
-
-    # PASS / FAIL decision
-    threshold = 70.0
-    if final_trust_score >= threshold:
-        final_result["status"] = "PASS"
-        final_result["reason"] = "Data quality meets the required trust threshold."
-    else:
-        final_result["status"] = "FAIL"
-        final_result["reason"] = "Data quality does not meet the required trust threshold."
-
-    final_result["all_reports"] = validation_reports
-
-    # 🔐 FINAL GUARANTEE: JSON-safe output
-    return make_json_safe(final_result)

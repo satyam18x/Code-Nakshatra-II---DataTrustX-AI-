@@ -1,10 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://10.184.70.49:8000/',
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    baseURL: 'http://127.0.0.1:8000/',
 });
 
 // Add a request interceptor to attach the token to every request
@@ -17,6 +14,20 @@ api.interceptors.request.use(
         return config;
     },
     (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// Add a response interceptor to automatically extract data and handle 401 errors
+api.interceptors.response.use(
+    (response) => {
+        return response.data;
+    },
+    (error) => {
+        if (error.response?.status === 401) {
+            sessionStorage.removeItem('token');
+            window.location.href = '/login';
+        }
         return Promise.reject(error);
     }
 );

@@ -1,394 +1,412 @@
 import React, { useState, useEffect, useContext } from 'react';
-import marketplaceService from '../services/marketplace';
-import { AuthContext } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-    CreditCard,
-    Truck,
-    CheckCircle2,
-    Download,
-    AlertTriangle,
-    FileText,
-    Clock,
-    IndianRupee,
-    User,
-    UploadCloud,
-    ExternalLink,
-    ShieldAlert,
-    BarChart3,
-    ShieldCheck,
+import { 
+    Clock, 
+    ArrowRight, 
+    Download, 
+    ShieldCheck, 
+    ShoppingCart, 
+    DollarSign, 
+    CheckCircle2, 
+    ChevronRight,
+    Activity,
+    Lock,
+    Zap,
+    Key,
+    Database,
+    Cpu,
     ArrowUpRight,
     Search,
-    ChevronRight,
-    Boxes
+    Upload,
+    FileText,
+    UploadCloud
 } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
+import marketplaceService from '../services/marketplace';
 import { toast } from 'react-hot-toast';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
-import LoadingSkeleton from '../components/ui/LoadingSkeleton';
-import EmptyState from '../components/ui/EmptyState';
 import ValidationReportModal from '../components/ValidationReportModal';
 
 const DealsPage = () => {
     const { user } = useContext(AuthContext);
     const [deals, setDeals] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [selectedReport, setSelectedReport] = useState(null);
-    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showDeliverModal, setShowDeliverModal] = useState(false);
+    const [deliverDealId, setDeliverDealId] = useState(null);
+    const [deliveryFile, setDeliveryFile] = useState(null);
+    const [isDelivering, setIsDelivering] = useState(false);
+    const [deliveryResult, setDeliveryResult] = useState(null);
 
     useEffect(() => {
         fetchDeals();
     }, []);
 
     const fetchDeals = async () => {
-        setIsLoading(true);
         try {
-            const res = await marketplaceService.getMyDeals();
-            setDeals(res.data);
+            const data = await marketplaceService.getMyDeals();
+            setDeals(data);
         } catch (err) {
-            toast.error("Exchange Protocol: Failed to synchronize transaction history.");
+            toast.error('Failed to synchronize transaction ledger.');
         } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleViewReport = async (dealId) => {
-        const loadingToast = toast.loading('Retrieving cryptographic quality audit...');
-        try {
-            const res = await marketplaceService.getValidationReportByDeal(dealId);
-            setSelectedReport(res.data);
-            setIsReportModalOpen(true);
-            toast.dismiss(loadingToast);
-        } catch (err) {
-            toast.error(err.response?.data?.detail || "Audit trace not found for this transaction.", { id: loadingToast });
+            setLoading(false);
         }
     };
 
     const handlePay = async (dealId) => {
-        const loadingToast = toast.loading('Executing autonomous escrow routing...');
+        const tid = toast.loading('Establishing secure escrow channel...');
         try {
             await marketplaceService.payEscrow(dealId);
-            toast.success('Routing Successful: Funds secured in network escrow.', { id: loadingToast });
+            toast.success('Escrow authorized. Asset decryption queued.', { id: tid });
             fetchDeals();
         } catch (err) {
-            toast.error('Routing Failure: Escrow protocol interrupted.', { id: loadingToast });
-        }
-    };
-
-    const handleDeliver = async (dealId) => {
-        const fileInput = document.getElementById(`file-${dealId}`);
-        const file = fileInput?.files[0];
-
-        if (!file) {
-            toast.error("Protocol Error: Valid .csv manifest required for transmission.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const loadingToast = toast.loading('Initializing neural data verification... Analyzing veracity.', { duration: 5000 });
-        try {
-            const res = await marketplaceService.markDelivered(dealId, formData);
-            toast.success(`Verification Successful: Quality Index ${res.data.score}%`, { id: loadingToast });
-            fetchDeals();
-        } catch (err) {
-            const msg = err.response?.data?.detail || 'Transmission Failure: Dataset verification failed.';
-            toast.error(msg, { id: loadingToast });
+            toast.error('Payment rejected: Escrow protocol error.', { id: tid });
         }
     };
 
     const handleDownload = async (dealId) => {
-        const loadingToast = toast.loading('Decrypting secure asset for download...');
+        const tid = toast.loading('Initiating secure asset retrieval...');
         try {
-            const response = await marketplaceService.downloadDataset(dealId);
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const blob = await marketplaceService.downloadDataset(dealId);
+            const url = window.URL.createObjectURL(new Blob([blob]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', `datatrustx_asset_${dealId}.csv`);
+            link.setAttribute('download', `dataset_${dealId}.csv`);
             document.body.appendChild(link);
             link.click();
-            link.parentNode.removeChild(link);
-            toast.success('Decryption Successful: Download protocol initiated.', { id: loadingToast });
+            link.remove();
+            window.URL.revokeObjectURL(url);
+            toast.success('Asset successfully retrieved.', { id: tid });
         } catch (err) {
-            toast.error('Decryption Failure: Secure asset link has expired.', { id: loadingToast });
+            console.error('Download error:', err);
+            toast.error(err.response?.data?.detail || 'Retrieval failed: Asset locked or missing.', { id: tid });
         }
     };
 
-    const handleDispute = async (dealId) => {
-        const reason = prompt("Describe the protocol violation (e.g., 'Inconsistent logic', 'Delivery failure'):");
-        if (!reason) return;
-
-        const loadingToast = toast.loading('Initiating conflict resolution protocol...');
+    const handleDeliver = async () => {
+        if (!deliveryFile) { toast.error('Please select a CSV file.'); return; }
+        setIsDelivering(true);
+        const tid = toast.loading('Running ML validation pipeline...');
         try {
-            await marketplaceService.raiseDispute(dealId, reason);
-            toast.success('Protocol Initialized: Conflict queued for administrative review.', { id: loadingToast });
+            const formData = new FormData();
+            formData.append('file', deliveryFile);
+            const result = await marketplaceService.markDelivered(deliverDealId, formData);
+            setDeliveryResult(result);
+            toast.success(`Validation PASSED (Score: ${result.score?.toFixed(1)}%). Dataset delivered!`, { id: tid });
             fetchDeals();
         } catch (err) {
-            toast.error(err.response?.data?.detail || 'Protocol Failure: Conflict initialization failed.', { id: loadingToast });
+            const detail = err.response?.data?.detail || 'Delivery failed: Validation rejected.';
+            toast.error(detail, { id: tid });
+        } finally {
+            setIsDelivering(false);
         }
     };
 
-    const handleConfirm = async (dealId) => {
-        if (!window.confirm('Authorize Final Settlement? This protocol will release locked escrow funds to the counterparty. This execution is permanent.')) return;
-
-        const loadingToast = toast.loading('Executing final settlement routing...');
-        try {
-            await marketplaceService.confirmDelivery(dealId);
-            toast.success('Settlement Complete: Funds disbursed to counterparty.', { id: loadingToast });
-            fetchDeals();
-        } catch (err) {
-            toast.error(err.response?.data?.detail || 'Settlement Failure: Routing protocol interrupted.', { id: loadingToast });
-        }
+    const openDeliverModal = (dealId) => {
+        setDeliverDealId(dealId);
+        setDeliveryFile(null);
+        setDeliveryResult(null);
+        setShowDeliverModal(true);
     };
 
-    const filteredDeals = user?.role === 'buyer'
-        ? deals.filter(deal => deal.buyer_username === user.username)
-        : deals.filter(deal => deal.seller_username === user.username);
+    const viewReport = async (deal) => {
+        // Try to load from deal's veracity_report or fetch from history
+        if (deal.veracity_report) {
+            setSelectedReport(deal.veracity_report);
+            setIsModalOpen(true);
+        } else {
+            try {
+                const report = await marketplaceService.getValidationReportByDeal(deal.id);
+                setSelectedReport(report);
+                setIsModalOpen(true);
+            } catch {
+                toast.error('No validation report found for this deal.');
+            }
+        }
+    };
 
     return (
-        <div className="max-w-7xl mx-auto space-y-12 pb-20">
-            {/* Header Area */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pt-8 px-2">
-                <div>
-                    <div className="flex items-center space-x-3 text-indigo-600 font-bold mb-3 tracking-widest uppercase text-[11px]">
-                        <Boxes className="w-4 h-4" />
-                        <span>Logistics Pipeline</span>
+        <div className="min-h-screen bg-slate-50 pt-24 pb-12 font-sans selection:bg-brand-100 selection:text-brand-900">
+            <div className="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 space-y-8">
+                
+                {/* ── HEADER ── */}
+                <div className="bg-white p-8 lg:p-12 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+                    <div className="space-y-4">
+                        <div className="flex items-center space-x-3 text-brand-600">
+                            <Lock size={18} strokeWidth={2.5} />
+                            <span className="text-[11px] font-black uppercase tracking-[0.2em]">Transaction Ledger</span>
+                        </div>
+                        <h1 className="text-5xl lg:text-6xl font-display font-bold tracking-tightest text-slate-900">
+                            Operational <span className="text-brand-500">Trace</span>
+                        </h1>
+                        <p className="text-lg text-slate-500 font-medium max-w-lg">
+                            Monitor the veracity status and settlement cycle of your data acquisitions.
+                        </p>
                     </div>
 
-                    <h1 className="text-4xl lg:text-5xl font-bold text-neutral-900 tracking-tightest">Transaction Hub</h1>
-                    <p className="text-lg text-neutral-500 mt-3 font-medium">Monitor active settlements and secure asset deliveries.</p>
-                </div>
-                <div className="flex items-center space-x-4">
-                    <div className="flex -space-x-3">
-                        {[1, 2, 3].map(i => (
-                            <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-neutral-100 flex items-center justify-center">
-                                <User className="w-5 h-5 text-neutral-400" />
-                            </div>
-                        ))}
+                    <div className="flex gap-4">
+                        <Button variant="secondary" className="h-14 rounded-2xl border-slate-200 px-8 bg-white">
+                            <Download className="mr-2 w-4 h-4" /> Export Ledger
+                        </Button>
                     </div>
-                    <Badge variant="primary" className="px-4 py-2 rounded-xl text-[11px] font-black tracking-widest uppercase">
-                        {filteredDeals.length} Active Pipelines
-                    </Badge>
-
                 </div>
-            </div>
 
-            {isLoading ? (
-                <div className="space-y-6">
-                    <LoadingSkeleton count={3} type="card" className="h-48 rounded-[32px]" />
-                </div>
-            ) : filteredDeals.length === 0 ? (
-                <Card className="flex items-center justify-center py-32 rounded-[32px] border-dashed border-2 border-neutral-100 bg-transparent">
-                    <EmptyState
-                        icon={Truck}
-                        title="No active pipelines"
-                        description="Your transaction hub is empty. Once a proposal is accepted, the settlement pipeline will initiate here."
-                    />
-                </Card>
-            ) : (
-                <div className="space-y-8">
-                    {filteredDeals.map((deal) => (
-                        <motion.div
-                            key={deal.id}
-                            initial={{ opacity: 0, scale: 0.98 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="group"
-                        >
-                            <Card className="overflow-hidden border-neutral-100 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] hover:border-indigo-500/20 transition-all duration-500 rounded-[32px] bg-white">
-                                <div className="flex flex-col lg:flex-row">
-                                    {/* Sidebar Info */}
-                                    <div className={`p-10 lg:w-72 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-neutral-100 ${deal.delivery_status === 'delivered' ? 'bg-emerald-50/30' : 'bg-indigo-50/50'
-                                        }`}>
+                {/* ── DEAL GRID ── */}
+                <div className="space-y-8 bg-white p-8 lg:p-12 rounded-[3rem] border border-slate-200 shadow-sm">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <Activity className="text-brand-600 w-5 h-5" strokeWidth={2.5} />
+                            <h2 className="text-2xl font-display font-bold tracking-tightest text-slate-900 uppercase">Active Handshakes</h2>
+                        </div>
+                        <Badge variant="primary" className="bg-brand-50 text-brand-600 border-brand-200/50 px-4 py-1.5">Real-time Settlement Grid</Badge>
+                    </div>
 
-                                        <div className="space-y-1">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Pipeline ID</span>
-                                            <h3 className="text-2xl font-bold text-neutral-900 tracking-tight">#{deal.id}</h3>
-                                        </div>
-
-                                        <div className="space-y-5 mt-10">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wide">Escrow</span>
-                                                <Badge variant={deal.payment_status === 'escrowed' ? 'success' : 'warning'} className="font-black text-[9px]">
-                                                    {deal.payment_status?.toUpperCase()}
+                    {loading ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="h-80 bg-slate-50 rounded-[2.5rem] animate-pulse border border-slate-100" />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <AnimatePresence>
+                                {deals.map((deal, idx) => (
+                                    <motion.div
+                                        key={deal.id}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: idx * 0.1 }}
+                                    >
+                                        <Card className="p-0 overflow-hidden border-slate-200 hover:border-brand-500/40 transition-all duration-500 group flex flex-col h-full bg-slate-50/30 hover:bg-white shadow-sm">
+                                            {/* Status Header */}
+                                            <div className="p-8 pb-0 flex justify-between items-start">
+                                                <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-lg border border-white/10">
+                                                    <Key size={20} strokeWidth={2.5} />
+                                                </div>
+                                                <Badge 
+                                                    variant={deal.status === 'completed' ? 'success' : deal.status === 'paid' ? 'primary' : 'warning'}
+                                                    className="uppercase tracking-widest text-[9px] font-black px-3 py-1.5 border-slate-200/50"
+                                                >
+                                                    {deal.status}
                                                 </Badge>
                                             </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wide">Delivery</span>
-                                                <Badge variant={deal.delivery_status === 'delivered' ? 'success' : 'primary'} className="font-black text-[9px]">
-                                                    {deal.delivery_status?.toUpperCase()}
-                                                </Badge>
-                                            </div>
-                                        </div>
-                                    </div>
 
-                                    {/* Main Content */}
-                                    <div className="flex-1 p-10 flex flex-col md:flex-row md:items-center justify-between gap-12">
-                                        <div className="space-y-8 flex-1">
-                                            <div className="grid sm:grid-cols-2 gap-10">
+                                            <div className="p-8 space-y-6 flex-1 flex flex-col">
                                                 <div className="space-y-2">
-                                                    <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Requirement Link</span>
-                                                    <div className="flex items-center space-x-3">
-                                                        <div className="w-12 h-12 rounded-2xl bg-neutral-50 flex items-center justify-center">
-                                                            <FileText className="w-6 h-6 text-neutral-400" />
-                                                        </div>
-                                                        <div>
-                                                            <h4 className="font-bold text-neutral-900">Request #{deal.request_id}</h4>
-                                                            <p className="text-[13px] text-neutral-500 font-medium italic">Active Context</p>
-                                                        </div>
+                                                    <h3 className="text-2xl font-display font-bold text-slate-900 tracking-tightest line-clamp-1 group-hover:text-brand-600 transition-colors">
+                                                        {deal.dataset?.title || deal.request?.title || `Requirement Fulfillment`}
+                                                    </h3>
+                                                    <p className="text-slate-500 font-medium text-sm">
+                                                        Trace_ID: {String(deal.id ?? '').padStart(8, '0')} · {user?.role === 'buyer' ? `@${deal.seller_username}` : `@${deal.buyer_username}`}
+                                                    </p>
+                                                </div>
+
+                                                <div className="p-5 bg-white border border-slate-200 rounded-2xl space-y-4 shadow-sm">
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Veracity Audit</span>
+                                                        {deal.delivery_status === 'delivered' && (
+                                                            <button 
+                                                                onClick={() => viewReport(deal)}
+                                                                className="text-[10px] font-black uppercase tracking-widest text-brand-600 hover:text-brand-700 transition-colors flex items-center"
+                                                            >
+                                                                View Report <ArrowRight className="ml-1 w-3 h-3" />
+                                                            </button>
+                                                        )}
+                                                        {deal.delivery_status !== 'delivered' && (
+                                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Awaiting Delivery</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                                        <motion.div 
+                                                            initial={{ width: 0 }}
+                                                            animate={{ width: `${deal.veracity_report?.final_score || 0}%` }}
+                                                            className="h-full bg-audit-500 shadow-[0_0_10px_rgba(29,185,84,0.3)]"
+                                                        />
                                                     </div>
                                                 </div>
 
-                                                <div className="space-y-2">
-                                                    <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Final Settlement</span>
-                                                    <div className="flex items-center space-x-1">
-                                                        <IndianRupee className="w-5 h-5 text-neutral-900" strokeWidth={3} />
-                                                        <span className="text-3xl font-bold text-neutral-900 tracking-tightest">{deal.price.toLocaleString()}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="flex flex-wrap items-center gap-10 pt-4 border-t border-neutral-50">
-                                                <div className="flex items-center space-x-3">
-                                                    <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-[10px] font-black">
-                                                        {user?.role === 'buyer' ? deal.seller_username[0]?.toUpperCase() : deal.buyer_username[0]?.toUpperCase()}
-                                                    </div>
+                                                <div className="mt-auto pt-6 border-t border-slate-200 flex items-center justify-between">
                                                     <div>
-                                                        <span className="text-[11px] font-black text-neutral-400 uppercase block leading-none mb-1">Peer</span>
-                                                        <span className="text-[14px] font-bold text-neutral-700">@{user?.role === 'buyer' ? deal.seller_username : deal.buyer_username}</span>
+                                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Settlement</p>
+                                                        <p className="text-2xl font-display font-bold text-slate-900 tracking-tightest">
+                                                            ${deal.price}
+                                                        </p>
                                                     </div>
-                                                </div>
-                                                {deal.quality_score !== null && (
-                                                    <div className="flex-1 min-w-[180px]">
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <span className="text-[11px] font-black text-neutral-400 uppercase tracking-widest">Neural Veracity Score</span>
-                                                            <span className={`text-[13px] font-black ${deal.quality_score >= 80 ? 'text-emerald-600' : 'text-indigo-600'}`}>
-                                                                {deal.quality_score?.toFixed(1)}%
-                                                            </span>
-
-                                                        </div>
-                                                        <div className="h-2 w-full bg-neutral-100 rounded-full overflow-hidden">
-                                                            <motion.div
-                                                                initial={{ width: 0 }}
-                                                                animate={{ width: `${deal.quality_score}%` }}
-                                                                className={`h-full ${deal.quality_score >= 80 ? 'bg-emerald-500' : 'bg-indigo-500'}`}
-
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        {/* Dynamic Action Console */}
-                                        <div className="flex flex-col gap-4 min-w-[240px] md:border-l md:border-neutral-100 md:pl-12">
-                                            {user?.role === 'buyer' && (
-                                                <>
-                                                    {deal.payment_status === 'pending' && (
-                                                        <Button onClick={() => handlePay(deal.id)} variant="glow" className="w-full h-14 rounded-2xl font-bold text-[15px] hover:scale-[1.02] transition-transform">
-                                                            Fund Escrow <ArrowUpRight className="ml-2 w-4 h-4" strokeWidth={3} />
-                                                        </Button>
-                                                    )}
-
-                                                    {deal.delivery_status === 'delivered' && (
-                                                        <>
-                                                            <Button onClick={() => handleDownload(deal.id)} className="w-full h-14 rounded-2xl font-bold text-[15px] bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/10">
-                                                                <Download className="mr-2.5 w-4 h-4" strokeWidth={3} /> Download Asset
-                                                            </Button>
-                                                            <Button variant="secondary" onClick={() => handleViewReport(deal.id)} className="w-full h-14 rounded-2xl font-bold text-[15px] border-neutral-100">
-                                                                <BarChart3 className="mr-2.5 w-4 h-4 text-indigo-600" /> Veracity Report
-                                                            </Button>
-
-                                                            {deal.payment_status === 'escrowed' && (
-                                                                <Button variant="outline" onClick={() => handleConfirm(deal.id)} className="w-full h-14 rounded-2xl font-bold text-[15px] border-emerald-500 text-emerald-600 hover:bg-emerald-50">
-                                                                    <CheckCircle2 className="mr-2.5 w-4 h-4" strokeWidth={3} /> Authorize Payout
+                                                    
+                                                    {/* Buyer Action Flow */}
+                                                    {user?.role === 'buyer' && (
+                                                        <div className="flex gap-4">
+                                                            {deal.payment_status === 'pending' && (
+                                                                <Button 
+                                                                    variant="glow"
+                                                                    onClick={() => handlePay(deal.id)}
+                                                                    className="rounded-xl px-6 h-12"
+                                                                >
+                                                                    {deal.delivery_status === 'delivered' ? 'Verify & Pay' : 'Pay'} <DollarSign className="ml-2 w-4 h-4" />
                                                                 </Button>
                                                             )}
-                                                        </>
-                                                    )}
-                                                </>
-                                            )}
-
-                                            {user?.role === 'seller' && (
-                                                <>
-                                                    {deal.payment_status === 'escrowed' && deal.delivery_status === 'pending' ? (
-                                                        <div className="space-y-6">
-                                                            <div className="relative group/upload overflow-hidden rounded-2xl">
-                                                                <input
-                                                                    type="file"
-                                                                    id={`file-${deal.id}`}
-                                                                    accept=".csv"
-                                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                                                                />
-                                                                <div className="border-2 border-dashed border-neutral-200 rounded-2xl p-8 text-center group-hover/upload:border-indigo-500 group-hover/upload:bg-indigo-50/10 transition-all duration-300">
-                                                                    <UploadCloud className="w-8 h-8 text-neutral-300 mx-auto mb-3 group-hover/upload:text-indigo-600 transition-colors" />
-                                                                    <p className="text-[11px] font-black text-neutral-400 uppercase tracking-tighter">Attach .CSV Asset</p>
-                                                                </div>
-                                                            </div>
-                                                            <Button onClick={() => handleDeliver(deal.id)} variant="glow" className="w-full h-14 rounded-2xl font-bold text-[15px]">
-                                                                Execute Transmission
-                                                            </Button>
-
-                                                        </div>
-                                                    ) : deal.delivery_status === 'delivered' ? (
-                                                        <div className="space-y-4">
-                                                            <div className="text-center p-8 bg-emerald-50 rounded-2xl border border-emerald-100">
-                                                                <ShieldCheck className="w-10 h-10 text-emerald-500 mx-auto mb-3" />
-                                                                <p className="text-[12px] font-black text-emerald-700 uppercase tracking-widest">Pipeline Verified</p>
-                                                            </div>
-                                                            <Button variant="secondary" onClick={() => handleViewReport(deal.id)} className="w-full h-14 rounded-2xl font-bold text-[15px] border-neutral-100">
-                                                                <ShieldCheck className="mr-2.5 w-4 h-4 text-indigo-600" /> Audit Log
-                                                            </Button>
-
-                                                        </div>
-                                                    ) : (
-                                                        <div className="text-center p-12 bg-neutral-50 rounded-[32px] border border-neutral-100 border-dashed">
-                                                            <Clock className="w-10 h-10 text-neutral-300 mx-auto mb-4 animate-pulse" />
-                                                            <p className="text-[11px] font-black text-neutral-500 uppercase tracking-widest leading-relaxed">Waiting for<br />Buyer Routing</p>
+                                                            
+                                                            {deal.delivery_status === 'delivered' && (
+                                                                <Button 
+                                                                    variant={deal.payment_status === 'escrowed' ? "success" : "secondary"}
+                                                                    onClick={() => deal.payment_status === 'escrowed' ? handleDownload(deal.id) : toast.error('Payment required to unlock download.')}
+                                                                    className={`rounded-xl px-6 h-12 ${deal.payment_status === 'escrowed' ? 'bg-audit-500 hover:bg-audit-600 text-white shadow-[0_10px_20px_-10px_rgba(29,185,84,0.4)]' : 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-60'}`}
+                                                                >
+                                                                    {deal.payment_status === 'escrowed' ? 'Download' : 'Locked'} {deal.payment_status === 'escrowed' ? <Download className="ml-2 w-4 h-4" /> : <Lock className="ml-2 w-4 h-4" />}
+                                                                </Button>
+                                                            )}
                                                         </div>
                                                     )}
-                                                </>
-                                            )}
 
-                                            {/* Resolution Protocol Link */}
-                                            {deal.payment_status === 'escrowed' && deal.dispute_status !== 'opened' && (
-                                                <button
-                                                    onClick={() => handleDispute(deal.id)}
-                                                    className="inline-flex items-center justify-center text-[11px] font-black uppercase tracking-widest text-red-400 hover:text-red-600 transition-colors mt-2"
-                                                >
-                                                    <ShieldAlert className="w-4 h-4 mr-2" /> Initial Resolution Protocol
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Active Conflict Banner */}
-                                {deal.dispute_status === 'opened' && (
-                                    <motion.div
-                                        initial={{ height: 0 }}
-                                        animate={{ height: 'auto' }}
-                                        className="bg-red-600 text-white px-10 py-5 flex items-center justify-between"
-                                    >
-                                        <div className="flex items-center">
-                                            <AlertTriangle className="w-5 h-5 mr-4" />
-                                            <span className="text-[13px] font-bold uppercase tracking-[0.1em]">Protocol Violation Detected: Conflict Active - Escrow Locked</span>
-                                        </div>
-                                        <Badge variant="secondary" className="bg-white/20 text-white border-transparent">REVIEW PENDING</Badge>
+                                                    {/* Seller Action Flow */}
+                                                    {user?.role === 'seller' && deal.delivery_status !== 'delivered' && (
+                                                        <Button
+                                                            variant="glow"
+                                                            onClick={() => { setSelectedDeal(deal); setShowDeliveryModal(true); }}
+                                                            className="rounded-xl px-6 h-12 bg-brand-600 hover:bg-brand-700"
+                                                        >
+                                                            Deliver <UploadCloud className="ml-2 w-4 h-4" />
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </Card>
                                     </motion.div>
-                                )}
-                            </Card>
-                        </motion.div>
-                    ))}
+                                ))}
+                            </AnimatePresence>
+                        </div>
+                    )}
                 </div>
-            )}
 
-            <ValidationReportModal
-                isOpen={isReportModalOpen}
-                onClose={() => setIsReportModalOpen(false)}
+                {/* ── EMPTY STATE ── */}
+                {!loading && deals.length === 0 && (
+                    <div className="py-32 text-center space-y-6 max-w-md mx-auto">
+                        <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8">
+                            <ShoppingCart className="text-slate-200 w-12 h-12" />
+                        </div>
+                        <h3 className="text-3xl font-display font-bold text-slate-900 tracking-tightest">Ledger is void.</h3>
+                        <p className="text-slate-500 font-medium text-lg leading-relaxed">
+                            No transactional handshakes have been localized for your node yet.
+                        </p>
+                        <Button variant="secondary" className="rounded-full px-8" onClick={() => window.location.href='/dashboard'}>
+                            Explore Marketplace
+                        </Button>
+                    </div>
+                )}
+            </div>
+
+            <ValidationReportModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
                 reportData={selectedReport}
             />
+
+            {/* ── DELIVERY MODAL ── */}
+            <AnimatePresence>
+                {showDeliverModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+                        <motion.div
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+                            onClick={() => !isDelivering && setShowDeliverModal(false)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative w-full max-w-xl bg-white rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden"
+                        >
+                            <div className="p-10 space-y-8">
+                                {/* Header */}
+                                <div className="space-y-3">
+                                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 text-[10px] font-black uppercase tracking-widest">
+                                        <Zap size={12} /> Dataset Delivery Protocol
+                                    </div>
+                                    <h2 className="text-3xl font-display font-bold tracking-tightest text-slate-900">Upload Dataset</h2>
+                                    <p className="text-slate-500 font-medium text-sm">The ML validation engine will automatically audit your CSV before delivery to the buyer.</p>
+                                </div>
+
+                                {/* File Upload Zone */}
+                                {!deliveryResult && (
+                                    <div className="space-y-6">
+                                        <div className="relative group">
+                                            <input
+                                                type="file"
+                                                accept=".csv"
+                                                onChange={e => setDeliveryFile(e.target.files[0])}
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                                disabled={isDelivering}
+                                            />
+                                            <div className={`w-full p-10 rounded-3xl border-2 border-dashed transition-all flex flex-col items-center justify-center gap-3 ${
+                                                deliveryFile ? 'border-brand-500 bg-brand-50/30' : 'border-slate-200 bg-slate-50 group-hover:border-brand-400'
+                                            }`}>
+                                                <UploadCloud className={`w-12 h-12 ${deliveryFile ? 'text-brand-500' : 'text-slate-300'}`} />
+                                                <span className="font-bold text-slate-700">{deliveryFile ? deliveryFile.name : 'Drop CSV or click to browse'}</span>
+                                                <span className="text-[11px] text-slate-400 font-black uppercase tracking-widest">CSV Only • Max 100MB</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-4">
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowDeliverModal(false)}
+                                                disabled={isDelivering}
+                                                className="flex-1 h-14 rounded-2xl border border-slate-200 font-bold text-slate-600 hover:bg-slate-50 transition-all disabled:opacity-50"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={handleDeliver}
+                                                disabled={!deliveryFile || isDelivering}
+                                                className="flex-[2] h-14 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold transition-all shadow-glow flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {isDelivering ? (
+                                                    <><span className="animate-spin mr-2">⟳</span> Validating...</>
+                                                ) : (
+                                                    <>Run ML Validation <Zap size={16} /></>
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Validation Result */}
+                                {deliveryResult && (
+                                    <div className="space-y-6">
+                                        <div className="p-8 rounded-3xl bg-audit-50 border border-audit-500/20 text-center space-y-3">
+                                            <CheckCircle2 className="w-12 h-12 text-audit-500 mx-auto" />
+                                            <h3 className="text-2xl font-display font-bold text-slate-900">Validation Passed!</h3>
+                                            <div className="text-5xl font-bold text-audit-500">{deliveryResult.score?.toFixed(1)}%</div>
+                                            <p className="text-slate-500 font-medium">Dataset has been delivered to the buyer. Escrow will release upon buyer confirmation.</p>
+                                        </div>
+                                        <div className="p-6 bg-slate-50 rounded-2xl">
+                                            <p className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-3">Report Summary</p>
+                                            <div className="space-y-2">
+                                                {deliveryResult.report?.all_reports && Object.entries(deliveryResult.report.all_reports).map(([key, data]) => (
+                                                    <div key={key} className="flex justify-between items-center">
+                                                        <span className="text-sm font-medium text-slate-600 capitalize">{key.replace(/_/g, ' ').replace('report', '')}</span>
+                                                        <span className="text-sm font-bold text-slate-900">{(data.score || 0).toFixed(0)}%</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => setShowDeliverModal(false)}
+                                            className="w-full h-14 rounded-2xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-all"
+                                        >
+                                            Close
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

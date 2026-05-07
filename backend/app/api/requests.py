@@ -1,7 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from typing import Optional
+import os
+import uuid
+import shutil
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from pydantic import BaseModel
 
 from app.core.dependencies import get_current_user, get_db
 from app.models.request import DatasetRequest
@@ -10,39 +13,54 @@ from app.models.deal import Deal
 
 router = APIRouter()
 
-
-class RequestCreate(BaseModel):
-    title: str
-    description: str
-    domain: str
-
+UPLOADS_DIR = "uploads/reference_datasets"
+os.makedirs(UPLOADS_DIR, exist_ok=True)
 
 @router.post("/request")
-def create_request(
-    data: RequestCreate,
+async def create_request(
+    title: str = Form(...),
+    description: str = Form(...),
+    domain: str = Form(...),
+    budget: str = Form(...),
+    request_type: str = Form("text"), # "text" or "similar"
+    file: Optional[UploadFile] = File(None),
     user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    print(f"DEBUG: Received request: title={title}, type={request_type}, file={file.filename if file else 'None'}")
     if user.role != "buyer":
         raise HTTPException(
             status_code=403,
             detail="Only buyers can create dataset requests"
         )
 
+    reference_path = None
+    if request_type == "similar" and file:
+        file_ext = os.path.splitext(file.filename)[1]
+        filename = f"{uuid.uuid4()}{file_ext}"
+        reference_path = os.path.join(UPLOADS_DIR, filename)
+        
+        with open(reference_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
     req = DatasetRequest(
         buyer_username=user.username,
-        title=data.title,
-        description=data.description,
-        domain=data.domain
+        title=title,
+        description=description,
+        domain=domain,
+        budget=budget,
+        request_type=request_type,
+        reference_dataset_path=reference_path
     )
 
     db.add(req)
     db.commit()
 
     return {
-    "message": "Dataset request posted successfully",
-    "request_id": req.id
-}
+        "message": "Dataset request posted successfully",
+        "request_id": req.id,
+        "type": request_type
+    }
 
 
 @router.get("/my_requests")

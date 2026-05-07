@@ -1,9 +1,13 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
+import json
 
 from app.core.database import SessionLocal
 from app.core.dependencies import get_current_user
 from app.models.validation import ValidationResult
+from app.models.deal import Deal
+from app.models.request import DatasetRequest
 
 router = APIRouter()
 
@@ -15,28 +19,47 @@ def get_db():
     finally:
         db.close()
 
-
+ 
 @router.get("/")
 def get_validation_history(
     user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    # Get records where user is either the creator (seller) OR the buyer of the associated deal
     records = (
         db.query(ValidationResult)
-        .filter(ValidationResult.username == user.username)
+        .outerjoin(Deal, ValidationResult.deal_id == Deal.id)
+        .filter(
+            or_(
+                ValidationResult.username == user.username,
+                Deal.buyer_username == user.username
+            )
+        )
         .order_by(ValidationResult.created_at.desc())
         .all()
     )
 
-    return [
-        {
+    # Enrich records with project title
+    results = []
+    for r in records:
+        title = "Manual Upload"
+        if r.deal_id:
+            deal = db.query(Deal).filter(Deal.id == r.deal_id).first()
+            if deal:
+                req = db.query(DatasetRequest).filter(DatasetRequest.id == deal.request_id).first()
+                if req:
+                    title = req.title
+        
+        results.append({
             "id": r.id,
+            "deal_id": r.deal_id,
+            "project_title": title,
             "final_score": r.final_score,
             "status": r.status,
-            "created_at": r.created_at
-        }
-        for r in records
-    ]
+            "created_at": r.created_at.isoformat() if r.created_at else None
+        })
+
+    return results
 
 @router.get("/report/id/{report_id}")
 def get_report_by_id(
@@ -44,16 +67,19 @@ def get_report_by_id(
     user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    import json
     record = db.query(ValidationResult).filter(ValidationResult.id == report_id).first()
     if not record:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Report not found")
     
-    # Simple check for authorization (ideally add admin check too)
-    if record.username != user.username and user.role != "admin":
-        from fastapi import HTTPException
-        raise HTTPException(status_code=403, detail="Not authorized to view this report")
+    # Authorization check: Seller (creator), Buyer (of associated deal), or Admin
+    is_authorized = (record.username == user.username or user.role == "admin")
+    if not is_authorized and record.deal_id:
+        deal = db.query(Deal).filter(Deal.id == record.deal_id).first()
+        if deal and deal.buyer_username == user.username:
+            is_authorized = True
+
+    if not is_authorized:
+        raise HTTPException(status_code=403, detail="Not authorized to view this cryptographic trace")
 
     return {
         "id": record.id,
@@ -71,21 +97,16 @@ def get_report_by_deal(
     user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    import json
     record = db.query(ValidationResult).filter(ValidationResult.deal_id == deal_id).first()
     if not record:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Report not found for this deal")
 
     # Authorization check
-    from app.models.deal import Deal
     deal = db.query(Deal).filter(Deal.id == deal_id).first()
     if not deal:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Deal not found")
 
     if deal.buyer_username != user.username and deal.seller_username != user.username and user.role != "admin":
-        from fastapi import HTTPException
         raise HTTPException(status_code=403, detail="Not authorized to view this report")
 
     return {

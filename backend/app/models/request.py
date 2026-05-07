@@ -10,4 +10,7 @@ class DatasetRequest(Base):
     title = Column(String)
     description = Column(Text)
     domain = Column(String)
+    budget = Column(String)
+    request_type = Column(String, default="text") # "text" or "similar"
+    reference_dataset_path = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)

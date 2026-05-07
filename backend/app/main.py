@@ -13,7 +13,7 @@ from app.api import deals
 from app.models import escrow
 from app.api import payments
 from app.api import delivery, confirmation
-from app.models import dispute
+from app.models import dispute, dataset
 from app.api import disputes, admin
 
 
@@ -69,6 +69,7 @@ deal.Base.metadata.create_all(bind=engine)
 escrow.Base.metadata.create_all(bind=engine)
 
 dispute.Base.metadata.create_all(bind=engine)
+dataset.Base.metadata.create_all(bind=engine)
 
 
 #register 

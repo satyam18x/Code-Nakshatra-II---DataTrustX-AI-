@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     const login = async (username, password) => {
         try {
             const response = await api.post('/auth/login', { username, password });
-            const { access_token, role, username: responseUsername } = response.data;
+            const { access_token, role, username: responseUsername } = response;
 
             sessionStorage.setItem('token', access_token);
 
